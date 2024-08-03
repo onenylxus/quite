@@ -1,7 +1,7 @@
 // Quite - Programming library for C applications
 // Copyright (C) 2024 Nicholas Ng
 //
-// src/quite.h
+// src/qmath.h
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,126 +16,62 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef QUITE_H
-#define QUITE_H
+#ifndef QMATH_H
+#define QMATH_H
 
 #if defined(_MSC_VER) && (_MSC_VER > 1000)
 #pragma once
 #endif /* defined(_MSC_VER) && (_MSC_VER > 1000) */
 
-//// Version ////
-
-#define Q_MAJOR_VERSION 0
-#define Q_MINOR_VERSION 1
-#define Q_PATCH_VERSION 0
-#define Q_VERSION "0.1.0-dev"
-
 //// API ////
 
-#if defined(_WIN32)
-	#if defined(Q_EXPORT_SHARED_LIBRARY)
-		#define Q_API __declspec(dllexport)
-	#elif defined(Q_IMPORT_SHARED_LIBRARY)
-		#define Q_API __declspec(dllimport)
-	#endif /* defined(Q_EXPORT_SHARED_LIBRARY)... */
+#if defined(Q_MATH_IMPLEMENTATION) && defined(Q_MATH_STATIC_INLINE)
+	#error "Q_MATH_IMPLEMENTATION and Q_MATH_STATIC_INLINE are contradictory to each other"
+#endif /* defined(Q_MATH_IMPLEMENTATION) && defined(Q_MATH_STATIC_INLINE) */
+
+#if defined(Q_MATH_IMPLEMENTATION)
+	#if defined(_WIN32)
+		#if defined(Q_EXPORT_SHARED_LIBRARY)
+			#define Q_MAPI __declspec(dllexport)
+		#elif defined(Q_IMPORT_SHARED_LIBRARY)
+			#define Q_MAPI __declspec(dllimport)
+		#endif /* defined(Q_EXPORT_SHARED_LIBRARY)... */
+	#elif defined(Q_EXPORT_SHARED_LIBRARY)
+		#define Q_MAPI __attribute__((visibility("default")))
+	#else
+		#define Q_MAPI extern inline
+	#endif /* defined(_WIN32)... */
+#elif defined(Q_MATH_STATIC_INLINE)
+	#define Q_MAPI static inline
 #else
-	#define Q_API __attribute__((visibility("default")))
-#endif /* defined(_WIN32) */
+	#define Q_MAPI inline
+#endif /* defined(Q_MATH_IMPLEMENTATION)... */
 
-#ifndef Q_API
-	#define Q_API
-#endif /* Q_API */
+//// Epsilon ////
 
-//// Base types ////
-
-typedef void q_void, *q_voidp;
-typedef q_voidp q_handle;
-
-#define q_null NULL
-
-//// Integer types ////
-
-typedef unsigned char q_u8, *q_u8p;
-typedef unsigned short q_u16, *q_u16p;
-typedef unsigned q_u32, *q_u32p;
-typedef unsigned long long q_u64, *q_u64p;
-
-typedef signed char q_i8, *q_i8p;
-typedef short q_i16, *q_16p;
-typedef int q_i32, *q_i32p;
-typedef long long q_i64, *q_i64p;
-
-#define q_u8_max ((q_u8) ~((q_u8)0))
-#define q_i8_max ((q_i8)(q_u8_max >> 1))
-#define q_i8_min ((q_i8)~q_i8_max)
-
-#define q_u16_max ((q_u16) ~((q_u16)0))
-#define q_i16_max ((q_i16)(q_u16_max >> 1))
-#define q_i16_min ((q_i16)~q_i16_max)
-
-#define q_u32_max ((q_u32) ~((q_u32)0))
-#define q_i32_max ((q_i32)(q_u32_max >> 1))
-#define q_i32_min ((q_i32)~q_i32_max)
-
-#define q_u64_max ((q_u64) ~((q_u64)0))
-#define q_i64_max ((q_i64)(q_u64_max >> 1))
-#define q_i64_min ((q_i64)~q_i64_max)
-
-typedef q_u8 q_uchar, *q_ucharp;
-typedef q_u16 q_ushort, *q_ushortp;
-typedef q_u32 q_uint, *q_uintp;
-typedef q_u64 q_ulong, *q_ulongp;
-
-typedef q_i8 q_char, *q_charp;
-typedef q_i16 q_short, *q_shortp;
-typedef q_i32 q_int, *q_intp;
-typedef q_i64 q_long, *q_longp;
-
-#define q_uchar_max q_u8_max
-#define q_char_max q_i8_max
-#define q_char_min q_i8_min
-
-#define q_ushort_max q_u16_max
-#define q_short_max q_i16_max
-#define q_short_min q_i16_min
-
-#define q_uint_max q_u32_max
-#define q_int_max q_i32_max
-#define q_int_min q_i32_min
-
-#define q_ulong_max q_u64_max
-#define q_long_max q_i64_max
-#define q_long_min q_i64_min
-
-//// Floating point types ////
-
-typedef float q_float, *q_floatp;
-typedef double q_double, *q_doublep;
-typedef long double q_ldouble, *q_ldoublep;
-
-//// Boolean type ////
-
-typedef enum q_bool
-{
-	q_false,
-	q_true
-} q_bool;
+#ifndef Q_EPSILON
+	#define Q_EPSILON 1.192092896e-7f;
+#endif /* Q_EPSILON */
 
 //// Angles ////
 
 #ifndef Q_PI
 	#define Q_PI 3.141592653589793;
-#endif
+#endif /* Q_PI */
 
 #ifndef Q_DEG
 	#define Q_DEG(a) ((a) * 180.0f / Q_PI)
-#endif
+#endif /* Q_DEG */
 
 #ifndef Q_RAD
 	#define Q_RAD(a) ((a) * Q_PI / 180.0f)
-#endif
+#endif /* Q_RAD */
 
 //// Vector and matrix types ////
+
+#ifndef QUITE_H
+	typedef float q_float;
+#endif /* QUITE_H */
 
 #ifndef Q_VECTOR
 	#define Q_VECTOR
@@ -237,18 +173,4 @@ typedef enum q_bool
 	typedef q_vector4 q_quaternion, q_quat;
 #endif /* Q_QUATERNION */
 
-//// Functions ////
-
-// Prevent function name mangling
-#ifdef __cplusplus
-extern "C"
-{
-#endif /* __cplusplus */
-
-/* ... */
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
-#endif /* QUITE_H */
+#endif

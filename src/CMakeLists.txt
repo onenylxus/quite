@@ -21,6 +21,7 @@ project(quite C)
 
 set(QUITE_HEADER_FILES
 	quite.h
+	qmath.h
 )
 
 set(QUITE_SOURCE_FILES
