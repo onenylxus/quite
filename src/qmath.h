@@ -182,23 +182,16 @@ extern "C"
 
 //// Float functions ////
 
-// Equal function
-QM_API q_bool qmFloatEqual(q_float left, q_float right)
-{
-	q_float epsilon = Q_EPSILON;
-	return fabsf(left - right) <= epsilon * fmaxf(fmaxf(fabsf(left), fabsf(right)), 1.0f) ? q_true : q_false;
-}
-
 // Clamp function
 QM_API q_float qmFloatClamp(q_float value, q_float min, q_float max)
 {
-	return max < min ? value : value < min ? min : value > max ? max : value;
+	return max < min ? value : fminf(fmaxf(value, min), max);
 }
 
 // Wrap function
 QM_API q_float qmFloatWrap(q_float value, q_float min, q_float max)
 {
-	return max == min ? min : value - (max - min) * floorf((value - min) / (max - min));
+	return value - (max - min) * floorf((value - min) / (max - min));
 }
 
 // Linear interpolate function
@@ -217,6 +210,303 @@ QM_API q_float qmFloatNormalize(q_float value, q_float start, q_float end)
 QM_API q_float qmFloatRemap(q_float value, q_float inStart, q_float inEnd, q_float outStart, q_float outEnd)
 {
 	return (value - inStart) * (outEnd - outStart) / (inEnd - inStart) + outStart;
+}
+
+// Equal function
+QM_API q_bool qmFloatEqual(q_float left, q_float right)
+{
+	q_float epsilon = Q_EPSILON;
+	return Q_BOOL(fabsf(left - right) <= epsilon * fmaxf(fmaxf(fabsf(left), fabsf(right)), 1.0f));
+}
+
+//// Vector2 functions ////
+
+// Zero vector function
+QM_API q_vector2 qmVector2Zero(q_void)
+{
+	q_vector2 result = {
+		0.0f,
+		0.0f
+	};
+	return result;
+}
+
+// One vector function
+QM_API q_vector2 qmVector2One(q_void)
+{
+	q_vector2 result = {
+		1.0f,
+		1.0f
+	};
+	return result;
+}
+
+// Add function
+QM_API q_vector2 qmVector2Add(q_vector2 left, q_vector2 right)
+{
+	q_vector2 result = {
+		left.x + right.x,
+		left.y + right.y
+	};
+	return result;
+}
+
+// Scalar add function
+QM_API q_vector2 qmVector2AddScalar(q_vector2 vec, q_float scl)
+{
+	q_vector2 result = {
+		vec.x + scl,
+		vec.y + scl
+	};
+	return result;
+}
+
+// Subtract function
+QM_API q_vector2 qmVector2Subtract(q_vector2 left, q_vector2 right)
+{
+	q_vector2 result = {
+		left.x - right.x,
+		left.y - right.y
+	};
+	return result;
+}
+
+// Scalar subtract function
+QM_API q_vector2 qmVector2SubtractScalar(q_vector2 vec, q_float scl)
+{
+	q_vector2 result = {
+		vec.x - scl,
+		vec.y - scl
+	};
+	return result;
+}
+
+// Multiply function
+QM_API q_vector2 qmVector2Multiply(q_vector2 left, q_vector2 right)
+{
+	q_vector2 result = {
+		left.x * right.x,
+		left.y * right.y
+	};
+	return result;
+}
+
+// Scale function
+QM_API q_vector2 qmVector2Scale(q_vector2 vec, q_float scl)
+{
+	q_vector2 result = {
+		vec.x * scl,
+		vec.y * scl
+	};
+	return result;
+}
+
+// Negate function
+QM_API q_vector2 qmVector2Negate(q_vector2 vec)
+{
+	q_vector2 result = {
+		-vec.x,
+		-vec.y
+	};
+	return result;
+}
+
+// Divide function
+QM_API q_vector2 qmVector2Divide(q_vector2 left, q_vector2 right)
+{
+	q_vector2 result = {
+		left.x / right.x,
+		left.y / right.y
+	};
+	return result;
+}
+
+// Scalar divide function
+QM_API q_vector2 qmVector2DivideScalar(q_vector2 vec, q_float scl)
+{
+	q_vector2 result = {
+		vec.x / scl,
+		vec.y / scl
+	};
+	return result;
+}
+
+// Normalize function
+QM_API q_vector2 qmVector2Normalize(q_vector2 vec)
+{
+	q_float length = sqrtf(vec.x * vec.x + vec.y * vec.y);
+
+	q_vector2 result = {
+		vec.x / length,
+		vec.y / length
+	};
+	return length != 0 ? result : vec;
+}
+
+// Invert function
+QM_API q_vector2 qmVector2Invert(q_vector2 vec)
+{
+	q_vector2 result = {
+		1.0f / vec.x,
+		1.0f / vec.y
+	};
+	return result;
+}
+
+// Minimum function
+QM_API q_vector2 qmVector2Min(q_vector2 left, q_vector2 right)
+{
+	q_vector2 result = {
+		fminf(left.x, right.x),
+		fminf(left.y, right.y)
+	};
+	return result;
+}
+
+// Maximum function
+QM_API q_vector2 qmVector2Max(q_vector2 left, q_vector2 right)
+{
+	q_vector2 result = {
+		fmaxf(left.x, right.x),
+		fmaxf(left.y, right.y)
+	};
+	return result;
+}
+
+// Clamp function
+QM_API q_vector2 qmVector2Clamp(q_vector2 vec, q_vector2 min, q_vector2 max)
+{
+	q_vector2 result = {
+		max.x < min.x ? vec.x : fminf(fmaxf(vec.x, min.x), max.x),
+		max.y < min.y ? vec.y : fminf(fmaxf(vec.y, min.y), max.y)
+	};
+	return result;
+}
+
+// Clamp on vector magnitude function
+QM_API q_vector2 qmVector2ClampMag(q_vector2 vec, q_float min, q_float max)
+{
+	q_float scl = max < min ? 1.0f : fminf(fmaxf(vec.x * vec.x + vec.y * vec.y, min), max);
+
+	q_vector2 result = {
+		vec.x * scl,
+		vec.y * scl
+	};
+	return result;
+}
+
+// Linear interpolation function
+QM_API q_vector2 qmVector2Lerp(q_float value, q_vector2 start, q_vector2 end)
+{
+	q_vector2 result = {
+		start.x + value * (end.x - start.x),
+		start.y + value * (end.y - start.y)
+	};
+	return result;
+}
+
+// Reflect vector on normal function
+QM_API q_vector2 qmVector2Reflect(q_vector2 vec, q_vector2 normal)
+{
+	q_float dprod = vec.x * normal.x + vec.y * normal.y;
+
+	q_vector2 result = {
+		vec.x - normal.x * 2.0f * dprod,
+		vec.y - normal.y * 2.0f * dprod
+	};
+	return result;
+}
+
+// Refract vector on normal function
+QM_API q_vector2 qmVector2Refract(q_vector2 vec, q_vector2 normal, q_float index)
+{
+	q_float dprod = vec.x * normal.x + vec.y * normal.y;
+	q_float diff = 1.0f - index * index * (1.0f - dprod * dprod);
+	if (diff < 0)
+	{
+		return vec;
+	}
+
+	q_vector2 result = {
+		vec.x * index - normal.x * (dprod * index + sqrtf(diff)),
+		vec.y * index - normal.y * (dprod * index + sqrtf(diff))
+	};
+	return result;
+}
+
+// Move vector to target function
+QM_API q_vector2 qmVector2Move(q_vector2 vec, q_vector2 target, q_float dist)
+{
+	q_float cdist = sqrtf((target.x - vec.x) * (target.x - vec.x) + (target.y - vec.y) * (target.y - vec.y));
+
+	q_vector2 result = {
+		vec.x + dist / cdist * (target.x - vec.x),
+		vec.y + dist / cdist * (target.y - vec.y)
+	};
+	return dist > 0 && dist <= cdist ? result : vec;
+}
+
+// Rotate vector function
+QM_API q_vector2 qmVector2Rotate(q_vector2 vec, q_float angle)
+{
+	q_vector2 result = {
+		vec.x * cosf(angle) - vec.y * sinf(angle),
+		vec.x * sinf(angle) + vec.y * cosf(angle)
+	};
+	return result;
+}
+
+// Length function
+QM_API q_float qmVector2Length(q_vector2 vec)
+{
+	return sqrtf(vec.x * vec.x + vec.y * vec.y);
+}
+
+// Squared length function
+QM_API q_float qmVector2LengthSq(q_vector2 vec)
+{
+	return vec.x * vec.x + vec.y * vec.y;
+}
+
+// Dot product function
+QM_API q_float qmVector2DotProduct(q_vector2 left, q_vector2 right)
+{
+	return left.x * right.x + left.y * right.y;
+}
+
+// Distance function
+QM_API q_float qmVector2Distance(q_vector2 left, q_vector2 right)
+{
+	return sqrtf((left.x - right.x) * (left.x - right.x) + (left.y - right.y) * (left.y - right.y));
+}
+
+// Squared distance function
+QM_API q_float qmVector2DistanceSq(q_vector2 left, q_vector2 right)
+{
+	return (left.x - right.x) * (left.x - right.x) + (left.y - right.y) * (left.y - right.y);
+}
+
+// Angle function
+QM_API q_float qmVector2Angle(q_vector2 left, q_vector2 right)
+{
+	return atan2f(left.x * right.y - left.y * right.x, left.x * right.x + left.y * right.y);
+}
+
+// Line angle function
+QM_API q_float qmVector2LineAngle(q_vector2 start, q_vector2 end)
+{
+	return -atan2f(end.y - start.y, end.x - start.x);
+}
+
+// Equal function
+QM_API q_bool qmVector2Equal(q_vector2 left, q_vector2 right)
+{
+	q_float epsilon = Q_EPSILON;
+
+	return Q_BOOL(
+		fabsf(left.x - right.x) <= epsilon * fmaxf(fmaxf(fabsf(left.x), fabsf(right.x)), 1.0f) &&
+		fabsf(left.y - right.y) <= epsilon * fmaxf(fmaxf(fabsf(left.y), fabsf(right.y)), 1.0f)
+	);
 }
 
 #ifdef __cplusplus

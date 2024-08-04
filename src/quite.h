@@ -141,6 +141,10 @@ typedef enum q_bool
 	q_true
 } q_bool, qt_b;
 
+#ifndef Q_BOOL
+	#define Q_BOOL(b) ((b) ? q_true : q_false)
+#endif
+
 //// Functions ////
 
 // Prevent function name mangling

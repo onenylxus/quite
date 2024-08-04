@@ -20,3 +20,5 @@ cmake_minimum_required(VERSION 3.0)
 project(quite)
 
 add_subdirectory(src ${PROJECT_NAME})
+
+add_compile_options(-Wall -Wextra)
