@@ -53,13 +53,13 @@
 //// Epsilon ////
 
 #ifndef Q_EPSILON
-	#define Q_EPSILON 1.192092896e-7f;
+	#define Q_EPSILON 1.192092896e-7f
 #endif /* Q_EPSILON */
 
 //// Angles ////
 
 #ifndef Q_PI
-	#define Q_PI 3.14159265358979323846;
+	#define Q_PI 3.14159265358979323846
 #endif /* Q_PI */
 
 #ifndef Q_DEG
@@ -172,6 +172,18 @@
 	typedef q_vector4 q_quaternion, qt_quat;
 #endif /* Q_QUATERNION */
 
+//// Internal functions ////
+
+inline q_float sqf(q_float x)
+{
+	return x * x;
+}
+
+inline q_bool equalf(q_float l, q_float r)
+{
+	return Q_BOOL(fabsf(l - r) <= fmaxf(fmaxf(fabsf(l), fabsf(r)), 1.0f) * Q_EPSILON);
+}
+
 //// Functions ////
 
 // Prevent function name mangling
@@ -185,12 +197,20 @@ extern "C"
 // Clamp function
 QM_API q_float qmFloatClamp(q_float value, q_float min, q_float max)
 {
-	return max < min ? value : fminf(fmaxf(value, min), max);
+	if (max < min)
+	{
+		return value;
+	}
+	return fminf(fmaxf(value, min), max);
 }
 
 // Wrap function
 QM_API q_float qmFloatWrap(q_float value, q_float min, q_float max)
 {
+	if (max <= min)
+	{
+		return value;
+	}
 	return value - (max - min) * floorf((value - min) / (max - min));
 }
 
@@ -209,14 +229,17 @@ QM_API q_float qmFloatNormalize(q_float value, q_float start, q_float end)
 // Remap function
 QM_API q_float qmFloatRemap(q_float value, q_float inStart, q_float inEnd, q_float outStart, q_float outEnd)
 {
+	if (inStart == inEnd || outStart == outEnd)
+	{
+		return value;
+	}
 	return (value - inStart) * (outEnd - outStart) / (inEnd - inStart) + outStart;
 }
 
 // Equal function
 QM_API q_bool qmFloatEqual(q_float left, q_float right)
 {
-	q_float epsilon = Q_EPSILON;
-	return Q_BOOL(fabsf(left - right) <= epsilon * fmaxf(fmaxf(fabsf(left), fabsf(right)), 1.0f));
+	return Q_BOOL(equalf(left, right));
 }
 
 //// Vector2 functions ////
@@ -224,20 +247,14 @@ QM_API q_bool qmFloatEqual(q_float left, q_float right)
 // Zero vector function
 QM_API q_vector2 qmVector2Zero(q_void)
 {
-	q_vector2 result = {
-		0.0f,
-		0.0f
-	};
+	q_vector2 result = {0.0f, 0.0f};
 	return result;
 }
 
 // One vector function
 QM_API q_vector2 qmVector2One(q_void)
 {
-	q_vector2 result = {
-		1.0f,
-		1.0f
-	};
+	q_vector2 result = {1.0f, 1.0f};
 	return result;
 }
 
@@ -334,13 +351,17 @@ QM_API q_vector2 qmVector2DivideScalar(q_vector2 vec, q_float scl)
 // Normalize function
 QM_API q_vector2 qmVector2Normalize(q_vector2 vec)
 {
-	q_float length = sqrtf(vec.x * vec.x + vec.y * vec.y);
+	q_float length = sqrtf(sqf(vec.x) + sqf(vec.y));
+	if (length == 0)
+	{
+		return vec;
+	}
 
 	q_vector2 result = {
 		vec.x / length,
 		vec.y / length
 	};
-	return length != 0 ? result : vec;
+	return result;
 }
 
 // Invert function
@@ -386,7 +407,26 @@ QM_API q_vector2 qmVector2Clamp(q_vector2 vec, q_vector2 min, q_vector2 max)
 // Clamp on vector magnitude function
 QM_API q_vector2 qmVector2ClampMag(q_vector2 vec, q_float min, q_float max)
 {
-	q_float scl = max < min ? 1.0f : fminf(fmaxf(vec.x * vec.x + vec.y * vec.y, min), max);
+	if (max < min)
+	{
+		return vec;
+	}
+
+	q_float length = sqrtf(sqf(vec.x) + sqf(vec.y));
+	if (length == 0)
+	{
+		return vec;
+	}
+
+	q_float scl = 1.0f;
+	if (length < min)
+	{
+		scl = min / length;
+	}
+	if (length > max)
+	{
+		scl = max / length;
+	}
 
 	q_vector2 result = {
 		vec.x * scl,
@@ -421,7 +461,7 @@ QM_API q_vector2 qmVector2Reflect(q_vector2 vec, q_vector2 normal)
 QM_API q_vector2 qmVector2Refract(q_vector2 vec, q_vector2 normal, q_float index)
 {
 	q_float dprod = vec.x * normal.x + vec.y * normal.y;
-	q_float diff = 1.0f - index * index * (1.0f - dprod * dprod);
+	q_float diff = 1.0f - sqf(index) * (1.0f - sqf(dprod));
 	if (diff < 0)
 	{
 		return vec;
@@ -437,21 +477,33 @@ QM_API q_vector2 qmVector2Refract(q_vector2 vec, q_vector2 normal, q_float index
 // Move vector to target function
 QM_API q_vector2 qmVector2Move(q_vector2 vec, q_vector2 target, q_float dist)
 {
-	q_float cdist = sqrtf((target.x - vec.x) * (target.x - vec.x) + (target.y - vec.y) * (target.y - vec.y));
+	if (dist <= 0)
+	{
+		return vec;
+	}
+
+	q_float cdist = sqrtf(sqf(target.x - vec.x) + sqf(target.y - vec.y));
+	if (cdist > dist)
+	{
+		return vec;
+	}
 
 	q_vector2 result = {
 		vec.x + dist / cdist * (target.x - vec.x),
 		vec.y + dist / cdist * (target.y - vec.y)
 	};
-	return dist > 0 && dist <= cdist ? result : vec;
+	return result;
 }
 
 // Rotate vector function
 QM_API q_vector2 qmVector2Rotate(q_vector2 vec, q_float angle)
 {
+	q_float sin = sinf(angle);
+	q_float cos = cosf(angle);
+
 	q_vector2 result = {
-		vec.x * cosf(angle) - vec.y * sinf(angle),
-		vec.x * sinf(angle) + vec.y * cosf(angle)
+		vec.x * cos - vec.y * sin,
+		vec.x * sin + vec.y * cos
 	};
 	return result;
 }
@@ -459,13 +511,13 @@ QM_API q_vector2 qmVector2Rotate(q_vector2 vec, q_float angle)
 // Length function
 QM_API q_float qmVector2Length(q_vector2 vec)
 {
-	return sqrtf(vec.x * vec.x + vec.y * vec.y);
+	return sqrtf(sqf(vec.x) + sqf(vec.y));
 }
 
 // Squared length function
 QM_API q_float qmVector2LengthSq(q_vector2 vec)
 {
-	return vec.x * vec.x + vec.y * vec.y;
+	return sqf(vec.x) + sqf(vec.y);
 }
 
 // Dot product function
@@ -477,13 +529,13 @@ QM_API q_float qmVector2DotProduct(q_vector2 left, q_vector2 right)
 // Distance function
 QM_API q_float qmVector2Distance(q_vector2 left, q_vector2 right)
 {
-	return sqrtf((left.x - right.x) * (left.x - right.x) + (left.y - right.y) * (left.y - right.y));
+	return sqrtf(sqf(left.x - right.x) + sqf(left.y - right.y));
 }
 
 // Squared distance function
 QM_API q_float qmVector2DistanceSq(q_vector2 left, q_vector2 right)
 {
-	return (left.x - right.x) * (left.x - right.x) + (left.y - right.y) * (left.y - right.y);
+	return sqf(left.x - right.x) + sqf(left.y - right.y);
 }
 
 // Angle function
@@ -504,8 +556,8 @@ QM_API q_bool qmVector2Equal(q_vector2 left, q_vector2 right)
 	q_float epsilon = Q_EPSILON;
 
 	return Q_BOOL(
-		fabsf(left.x - right.x) <= epsilon * fmaxf(fmaxf(fabsf(left.x), fabsf(right.x)), 1.0f) &&
-		fabsf(left.y - right.y) <= epsilon * fmaxf(fmaxf(fabsf(left.y), fabsf(right.y)), 1.0f)
+		equalf(left.x, right.x) &&
+		equalf(left.y, right.y)
 	);
 }
 
