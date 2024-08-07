@@ -352,7 +352,7 @@ QM_API q_vector2 qmVector2DivideScalar(q_vector2 vec, q_float scl)
 QM_API q_vector2 qmVector2Normalize(q_vector2 vec)
 {
 	q_float length = sqrtf(sqf(vec.x) + sqf(vec.y));
-	if (length == 0)
+	if (length == 0.0f)
 	{
 		return vec;
 	}
@@ -413,7 +413,7 @@ QM_API q_vector2 qmVector2ClampMag(q_vector2 vec, q_float min, q_float max)
 	}
 
 	q_float length = sqrtf(sqf(vec.x) + sqf(vec.y));
-	if (length == 0)
+	if (length == 0.0f)
 	{
 		return vec;
 	}
@@ -445,39 +445,39 @@ QM_API q_vector2 qmVector2Lerp(q_float value, q_vector2 start, q_vector2 end)
 	return result;
 }
 
-// Reflect vector on normal function
+// Reflection function
 QM_API q_vector2 qmVector2Reflect(q_vector2 vec, q_vector2 normal)
 {
-	q_float dprod = vec.x * normal.x + vec.y * normal.y;
+	q_float dot = vec.x * normal.x + vec.y * normal.y;
 
 	q_vector2 result = {
-		vec.x - normal.x * 2.0f * dprod,
-		vec.y - normal.y * 2.0f * dprod
+		vec.x - normal.x * 2.0f * dot,
+		vec.y - normal.y * 2.0f * dot
 	};
 	return result;
 }
 
-// Refract vector on normal function
+// Refraction function
 QM_API q_vector2 qmVector2Refract(q_vector2 vec, q_vector2 normal, q_float index)
 {
-	q_float dprod = vec.x * normal.x + vec.y * normal.y;
-	q_float diff = 1.0f - sqf(index) * (1.0f - sqf(dprod));
+	q_float dot = vec.x * normal.x + vec.y * normal.y;
+	q_float diff = 1.0f - sqf(index) * (1.0f - sqf(dot));
 	if (diff < 0)
 	{
 		return vec;
 	}
 
 	q_vector2 result = {
-		vec.x * index - normal.x * (dprod * index + sqrtf(diff)),
-		vec.y * index - normal.y * (dprod * index + sqrtf(diff))
+		vec.x * index - normal.x * (dot * index + sqrtf(diff)),
+		vec.y * index - normal.y * (dot * index + sqrtf(diff))
 	};
 	return result;
 }
 
-// Move vector to target function
+// Move function
 QM_API q_vector2 qmVector2Move(q_vector2 vec, q_vector2 target, q_float dist)
 {
-	if (dist <= 0)
+	if (dist <= 0.0f)
 	{
 		return vec;
 	}
@@ -495,7 +495,7 @@ QM_API q_vector2 qmVector2Move(q_vector2 vec, q_vector2 target, q_float dist)
 	return result;
 }
 
-// Rotate vector function
+// Rotate function
 QM_API q_vector2 qmVector2Rotate(q_vector2 vec, q_float angle)
 {
 	q_float sin = sinf(angle);
@@ -541,7 +541,9 @@ QM_API q_float qmVector2DistanceSq(q_vector2 left, q_vector2 right)
 // Angle function
 QM_API q_float qmVector2Angle(q_vector2 left, q_vector2 right)
 {
-	return atan2f(left.x * right.y - left.y * right.x, left.x * right.x + left.y * right.y);
+  q_float det = left.x * right.y - left.y * right.x;
+  q_float dot = left.x * right.x + left.y * right.y;
+	return atan2f(det, dot);
 }
 
 // Line angle function
@@ -553,11 +555,524 @@ QM_API q_float qmVector2LineAngle(q_vector2 start, q_vector2 end)
 // Equal function
 QM_API q_bool qmVector2Equal(q_vector2 left, q_vector2 right)
 {
-	q_float epsilon = Q_EPSILON;
-
 	return Q_BOOL(
 		equalf(left.x, right.x) &&
 		equalf(left.y, right.y)
+	);
+}
+
+//// Vector3 functions ////
+
+// Zero vector function
+QM_API q_vector3 qmVector3Zero(q_void)
+{
+	q_vector3 result = {0.0f, 0.0f, 0.0f};
+	return result;
+}
+
+// One vector function
+QM_API q_vector3 qmVector3One(q_void)
+{
+	q_vector3 result = {1.0f, 1.0f, 1.0f};
+	return result;
+}
+
+// Add function
+QM_API q_vector3 qmVector3Add(q_vector3 left, q_vector3 right)
+{
+	q_vector3 result = {
+		left.x + right.x,
+		left.y + right.y,
+		left.z + right.z
+	};
+	return result;
+}
+
+// Scalar add function
+QM_API q_vector3 qmVector3AddScalar(q_vector3 vec, q_float scl)
+{
+	q_vector3 result = {
+		vec.x + scl,
+		vec.y + scl,
+		vec.z + scl
+	};
+	return result;
+}
+
+// Subtract function
+QM_API q_vector3 qmVector3Subtract(q_vector3 left, q_vector3 right)
+{
+	q_vector3 result = {
+		left.x - right.x,
+		left.y - right.y,
+		left.z - right.z
+	};
+	return result;
+}
+
+// Scalar subtract function
+QM_API q_vector3 qmVector3SubtractScalar(q_vector3 vec, q_float scl)
+{
+	q_vector3 result = {
+		vec.x - scl,
+		vec.y - scl,
+		vec.z - scl
+	};
+	return result;
+}
+
+// Multiply function
+QM_API q_vector3 qmVector3Multiply(q_vector3 left, q_vector3 right)
+{
+	q_vector3 result = {
+		left.x * right.x,
+		left.y * right.y,
+		left.z * right.z
+	};
+	return result;
+}
+
+// Scale function
+QM_API q_vector3 qmVector3Scale(q_vector3 vec, q_float scl)
+{
+	q_vector3 result = {
+		vec.x * scl,
+		vec.y * scl,
+		vec.z * scl
+	};
+	return result;
+}
+
+// Negate function
+QM_API q_vector3 qmVector3Negate(q_vector3 vec)
+{
+	q_vector3 result = {
+		-vec.x,
+		-vec.y,
+		-vec.z
+	};
+	return result;
+}
+
+// Divide function
+QM_API q_vector3 qmVector3Divide(q_vector3 left, q_vector3 right)
+{
+	q_vector3 result = {
+		left.x / right.x,
+		left.y / right.y,
+		left.z / right.z
+	};
+	return result;
+}
+
+// Scalar divide function
+QM_API q_vector3 qmVector3DivideScalar(q_vector3 vec, q_float scl)
+{
+	q_vector3 result = {
+		vec.x / scl,
+		vec.y / scl,
+		vec.z / scl
+	};
+	return result;
+}
+
+// Normalize function
+QM_API q_vector3 qmVector3Normalize(q_vector3 vec)
+{
+	q_float length = sqrtf(sqf(vec.x) + sqf(vec.y) + sqf(vec.z));
+	if (length == 0.0f)
+	{
+		return vec;
+	}
+
+	q_vector3 result = {
+		vec.x / length,
+		vec.y / length,
+		vec.z / length
+	};
+	return result;
+}
+
+// Orthonormalize function
+QM_API q_void qmVector3Orthonormalize(q_vector3 *left, q_vector3 *right)
+{
+	q_vector3 vec = *left;
+	q_float len = sqrtf(sqf(vec.x) + sqf(vec.y) + sqf(vec.z));
+	if (len > 0.0f)
+	{
+		left->x /= len;
+		left->y /= len;
+		left->z /= len;
+	}
+
+	q_vector3 lcross = {
+		left->y * right->z - left->z * right->y,
+		left->z * right->x - left->x * right->z,
+		left->x * right->y - left->y * right->x
+	};
+	vec = lcross;
+	len = sqrtf(sqf(vec.x) + sqf(vec.y) + sqf(vec.z));
+	if (len > 0.0f)
+	{
+		lcross.x /= len;
+		lcross.y /= len;
+		lcross.z /= len;
+	}
+
+	q_vector3 rcross = {
+		lcross.y * left->z - lcross.z * left->y,
+		lcross.z * left->x - lcross.x * left->z,
+		lcross.x * left->y - lcross.y * left->x
+	};
+	*right = rcross;
+}
+
+// Invert function
+QM_API q_vector3 qmVector3Invert(q_vector3 vec)
+{
+	q_vector3 result = {
+		1.0f / vec.x,
+		1.0f / vec.y,
+		1.0f / vec.z
+	};
+	return result;
+}
+
+// Minimum function
+QM_API q_vector3 qmVector3Min(q_vector3 left, q_vector3 right)
+{
+	q_vector3 result = {
+		fminf(left.x, right.x),
+		fminf(left.y, right.y),
+		fminf(left.z, right.z)
+	};
+	return result;
+}
+
+// Maximum function
+QM_API q_vector3 qmVector3Max(q_vector3 left, q_vector3 right)
+{
+	q_vector3 result = {
+		fmaxf(left.x, right.x),
+		fmaxf(left.y, right.y),
+		fmaxf(left.z, right.z)
+	};
+	return result;
+}
+
+// Clamp function
+QM_API q_vector3 qmVector3Clamp(q_vector3 vec, q_vector3 min, q_vector3 max)
+{
+	q_vector3 result = {
+		max.x < min.x ? vec.x : fminf(fmaxf(vec.x, min.x), max.x),
+		max.y < min.y ? vec.y : fminf(fmaxf(vec.y, min.y), max.y),
+		max.z < min.z ? vec.z : fminf(fmaxf(vec.z, min.z), max.z)
+	};
+	return result;
+}
+
+// Clamp on vector magnitude function
+QM_API q_vector3 qmVector3ClampMag(q_vector3 vec, q_float min, q_float max)
+{
+	if (max < min)
+	{
+		return vec;
+	}
+
+	q_float length = sqrtf(sqf(vec.x) + sqf(vec.y) + sqf(vec.z));
+	if (length <= 0.0f)
+	{
+		return vec;
+	}
+
+	q_float scl = 1.0f;
+	if (length < min)
+	{
+		scl = min / length;
+	}
+	if (length > max)
+	{
+		scl = max / length;
+	}
+
+	q_vector3 result = {
+		vec.x * scl,
+		vec.y * scl,
+	};
+	return result;
+}
+
+// Linear interpolation function
+QM_API q_vector3 qmVector3Lerp(q_float value, q_vector3 start, q_vector3 end)
+{
+	q_vector3 result = {
+		start.x + value * (end.x - start.x),
+		start.y + value * (end.y - start.y),
+		start.z + value * (end.z - start.z)
+	};
+	return result;
+}
+
+// Cubic hermite interpolation function
+QM_API q_vector3 qmVector3CubicHermite(q_float value, q_vector3 left, q_vector3 ltan, q_vector3 right, q_vector3 rtan)
+{
+	q_float cube = sqf(value) * value;
+	q_float p0 = cube * 2.0f - sqf(value) * 3.0f + 1.0f;
+	q_float p1 = cube - sqf(value) * 2.0f + value;
+	q_float p2 = cube * -2.0f + sqf(value) * 3.0f;
+	q_float p3 = cube - sqf(value);
+
+	q_vector3 result = {
+		p0 * left.x + p1 * ltan.x + p2 * right.x + p3 * rtan.x,
+		p0 * left.y + p1 * ltan.y + p2 * right.y + p3 * rtan.y,
+		p0 * left.z + p1 * ltan.z + p2 * right.z + p3 * rtan.z,
+	};
+	return result;
+}
+
+// Cross product function
+QM_API q_vector3 qmVector3CrossProduct(q_vector3 left, q_vector3 right)
+{
+	q_vector3 result = {
+		left.y * right.z - left.z * right.y,
+		left.z * right.x - left.x * right.z,
+		left.x * right.y - left.y * right.x
+	};
+	return result;
+}
+
+// Perpendicular function
+QM_API q_vector3 qmVector3Perpendicular(q_vector3 vec)
+{
+  q_float min = fabsf(vec.x);
+  q_vector3 axis = {1.0f, 0.0f, 0.0f};
+  if (fabsf(vec.y) < min)
+  {
+    q_vector3 a = {0.0f, 1.0f, 0.0f};
+    min = fabsf(vec.y);
+    axis = a;
+  }
+  if (fabsf(vec.z) < min)
+  {
+    q_vector3 a = {0.0f, 0.0f, 1.0f};
+    axis = a;
+  }
+
+  q_vector3 result = {
+    vec.y * axis.z - vec.z * axis.y,
+    vec.z * axis.x - vec.x * axis.z,
+    vec.x * axis.y - vec.y * axis.x
+  };
+}
+
+// Barycenter function
+QM_API q_vector3 qmVector3Barycenter(q_vector3 plane, q_vector3 v1, q_vector3 v2, q_vector3 v3)
+{
+	q_vector3 s1 = {
+		v2.x - v1.x,
+		v2.y - v1.y,
+		v2.z - v1.z
+	};
+	q_vector3 s2 = {
+		v3.x - v1.x,
+		v3.y - v1.y,
+		v3.z - v1.z
+	};
+	q_vector3 s3 = {
+		plane.x - v1.x,
+		plane.y - v1.y,
+		plane.z - v1.z
+	};
+
+	q_float fs1 = sqf(s1.x) + sqf(s1.y) + sqf(s1.z);
+	q_float fs2 = sqf(s2.x) + sqf(s2.y) + sqf(s2.z);
+	q_float dot = s1.x * s2.x + s1.y * s2.y + s1.z * s2.z;
+	q_float dp1 = s1.x * s3.x + s1.y * s3.y + s1.z * s3.z;
+	q_float dp2 = s2.x * s3.x + s2.y * s3.y + s2.z * s3.z;
+
+	q_float y = (fs2 * dp1 - dot * dp2) / (fs1 * fs2 - sqf(dot));
+	q_float z = (fs1 * dp2 - dot * dp1) / (fs1 * fs2 - sqf(dot));
+	q_vector3 result = {
+		1.0f - y - z,
+		y,
+		z
+	};
+	return result;
+}
+
+// Reflection function
+QM_API q_vector3 qmVector3Reflect(q_vector3 vec, q_vector3 normal)
+{
+	q_float dot = vec.x * normal.x + vec.y * normal.y + vec.z * normal.z;
+
+	q_vector3 result = {
+		vec.x - normal.x * 2.0f * dot,
+		vec.y - normal.y * 2.0f * dot,
+		vec.z - normal.z * 2.0f * dot
+	};
+	return result;
+}
+
+// Refraction function
+QM_API q_vector3 qmVector3Refract(q_vector3 vec, q_vector3 normal, q_float index)
+{
+	q_float dot = vec.x * normal.x + vec.y * normal.y + vec.z * normal.z;
+	q_float diff = 1.0f - sqf(index) * (1.0f - sqf(dot));
+	if (diff < 0)
+	{
+		return vec;
+	}
+
+	q_vector3 result = {
+		vec.x * index - normal.x * (dot * index + sqrtf(diff)),
+		vec.y * index - normal.y * (dot * index + sqrtf(diff)),
+		vec.z * index - normal.z * (dot * index + sqrtf(diff))
+	};
+	return result;
+}
+
+// Projection function
+QM_API q_vector3 qmVector3Project(q_vector3 vec, q_vector3 target)
+{
+	q_float dot = vec.x * target.x + vec.y * target.y + vec.z * target.z;
+	q_float len = sqf(target.x) + sqf(target.y) + sqf(target.z);
+	q_float mag = dot / len;
+
+	q_vector3 result = {
+		target.x * mag,
+		target.y * mag,
+		target.z * mag
+	};
+	return result;
+}
+
+// Rejection function
+QM_API q_vector3 qmVector3Reject(q_vector3 vec, q_vector3 target)
+{
+	q_float dot = vec.x * target.x + vec.y * target.y + vec.z * target.z;
+	q_float len = sqf(target.x) + sqf(target.y) + sqf(target.z);
+	q_float mag = dot / len;
+
+	q_vector3 result = {
+		vec.x - target.x * mag,
+		vec.y - target.y * mag,
+		vec.z - target.z * mag
+	};
+	return result;
+}
+
+// Rotate by axis function
+QM_API q_vector3 qmVector3RotateByAxis(q_vector3 vec, q_vector3 axis, q_float angle)
+{
+	q_float alen = sqrtf(sqf(axis.x) + sqf(axis.y) + sqf(axis.z));
+	if (alen > 0.0f)
+	{
+		axis.x /= alen;
+		axis.y /= alen;
+		axis.z /= alen;
+	}
+
+	angle /= 2.0f;
+	q_float a = sinf(angle);
+	q_vector3 w = {
+		axis.x * a,
+		axis.y * a,
+		axis.z * a
+	};
+	a = cosf(angle);
+
+	q_vector3 cross = {
+		w.y * vec.z - w.z * vec.y,
+		w.z * vec.x - w.x * vec.z,
+		w.x * vec.y - w.y * vec.x
+	};
+	q_vector3 dcross = {
+		w.y * cross.z - w.z * cross.y,
+		w.z * cross.x - w.x * cross.z,
+		w.x * cross.y - w.y * cross.x
+	};
+
+	q_vector3 result = {
+		cross.x * 2.0f * a + dcross.x * 2.0f,
+		cross.y * 2.0f * a + dcross.y * 2.0f,
+		cross.z * 2.0f * a + dcross.z * 2.0f
+	};
+	return result;
+}
+
+// Move function
+QM_API q_vector3 qmVector3Move(q_vector3 vec, q_vector3 target, q_float dist)
+{
+	if (dist <= 0.0f)
+	{
+		return vec;
+	}
+
+	q_float cdist = sqrtf(sqf(target.x - vec.x) + sqf(target.y - vec.y) + sqf(target.z - vec.z));
+	if (cdist > dist)
+	{
+		return vec;
+	}
+
+	q_vector3 result = {
+		vec.x + dist / cdist * (target.x - vec.x),
+		vec.y + dist / cdist * (target.y - vec.y),
+		vec.z + dist / cdist * (target.z - vec.z)
+	};
+	return result;
+}
+
+// Length function
+QM_API q_float qmVector3Length(q_vector3 vec)
+{
+	return sqrtf(sqf(vec.x) + sqf(vec.y) + sqf(vec.z));
+}
+
+// Squared length function
+QM_API q_float qmVector3LengthSq(q_vector3 vec)
+{
+	return sqf(vec.x) + sqf(vec.y) + sqf(vec.z);
+}
+
+// Dot product function
+QM_API q_float qmVector3DotProduct(q_vector3 left, q_vector3 right)
+{
+	return left.x * right.x + left.y * right.y + left.z * right.z;
+}
+
+// Distance function
+QM_API q_float qmVector3Distance(q_vector3 left, q_vector3 right)
+{
+	return sqrtf(sqf(left.x - right.x) + sqf(left.y - right.y) + sqf(left.z - right.z));
+}
+
+// Squared distance function
+QM_API q_float qmVector3DistanceSq(q_vector3 left, q_vector3 right)
+{
+	return sqf(left.x - right.x) + sqf(left.y - right.y) + sqf(left.z - right.z);
+}
+
+// Angle function
+QM_API q_float qmVector3Angle(q_vector3 left, q_vector3 right)
+{
+  q_vector3 cross = {
+    left.y * right.z - left.z * right.y,
+	left.z * right.x - left.x * right.z,
+	left.x * right.y - left.y * right.x
+  };
+
+  q_float len = sqrtf(sqf(cross.x) + sqf(cross.y) + sqf(cross.z));
+  q_float dot = left.x * right.x + left.y * right.y + left.z * right.z;
+  return atan2f(len, dot);
+}
+
+// Equal function
+QM_API q_bool qmVector3Equal(q_vector3 left, q_vector3 right)
+{
+	return Q_BOOL(
+		equalf(left.x, right.x) &&
+		equalf(left.y, right.y) &&
+		equalf(left.z, right.z)
 	);
 }
 
