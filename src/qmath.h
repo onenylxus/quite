@@ -174,11 +174,19 @@
 
 //// Internal functions ////
 
+// Square function
 inline q_float sqf(q_float x)
 {
 	return x * x;
 }
 
+// Cube function
+inline q_float cbf(q_float x)
+{
+	return x * x * x;
+}
+
+// Float equal function
 inline q_bool equalf(q_float l, q_float r)
 {
 	return Q_BOOL(fabsf(l - r) <= fmaxf(fmaxf(fabsf(l), fabsf(r)), 1.0f) * Q_EPSILON);
@@ -351,13 +359,13 @@ QM_API q_vector2 qmVector2DivideScalar(q_vector2 vec, q_float scl)
 // Normalize function
 QM_API q_vector2 qmVector2Normalize(q_vector2 vec)
 {
-	q_float length = sqrtf(sqf(vec.x) + sqf(vec.y));
+	q_float length = sqrtf(sqf(vec.x) + sqf(vec.y)); // qmVector2Length(vec)
 	if (length == 0.0f)
 	{
 		return vec;
 	}
 
-	q_vector2 result = {
+	q_vector2 result = { // qmVector2DivideScale(vec, length)
 		vec.x / length,
 		vec.y / length
 	};
@@ -398,8 +406,8 @@ QM_API q_vector2 qmVector2Max(q_vector2 left, q_vector2 right)
 QM_API q_vector2 qmVector2Clamp(q_vector2 vec, q_vector2 min, q_vector2 max)
 {
 	q_vector2 result = {
-		max.x < min.x ? vec.x : fminf(fmaxf(vec.x, min.x), max.x),
-		max.y < min.y ? vec.y : fminf(fmaxf(vec.y, min.y), max.y)
+		max.x < min.x ? vec.x : fminf(fmaxf(vec.x, min.x), max.x), // qmFloatClamp(vec.x, min.x, max.x)
+		max.y < min.y ? vec.y : fminf(fmaxf(vec.y, min.y), max.y)  // qmFloatClamp(vec.y, min.y, max.y)
 	};
 	return result;
 }
@@ -412,7 +420,7 @@ QM_API q_vector2 qmVector2ClampMag(q_vector2 vec, q_float min, q_float max)
 		return vec;
 	}
 
-	q_float length = sqrtf(sqf(vec.x) + sqf(vec.y));
+	q_float length = sqrtf(sqf(vec.x) + sqf(vec.y)); // qmVector2Length(vec)
 	if (length == 0.0f)
 	{
 		return vec;
@@ -428,7 +436,7 @@ QM_API q_vector2 qmVector2ClampMag(q_vector2 vec, q_float min, q_float max)
 		scl = max / length;
 	}
 
-	q_vector2 result = {
+	q_vector2 result = { // qmVector2Scale(vec, scl)
 		vec.x * scl,
 		vec.y * scl
 	};
@@ -439,8 +447,8 @@ QM_API q_vector2 qmVector2ClampMag(q_vector2 vec, q_float min, q_float max)
 QM_API q_vector2 qmVector2Lerp(q_float value, q_vector2 start, q_vector2 end)
 {
 	q_vector2 result = {
-		start.x + value * (end.x - start.x),
-		start.y + value * (end.y - start.y)
+		start.x + value * (end.x - start.x), // qmFloatLerp(value, start.x, end.x)
+		start.y + value * (end.y - start.y)  // qmFloatLerp(value, start.y, end.y)
 	};
 	return result;
 }
@@ -448,7 +456,7 @@ QM_API q_vector2 qmVector2Lerp(q_float value, q_vector2 start, q_vector2 end)
 // Reflection function
 QM_API q_vector2 qmVector2Reflect(q_vector2 vec, q_vector2 normal)
 {
-	q_float dot = vec.x * normal.x + vec.y * normal.y;
+	q_float dot = vec.x * normal.x + vec.y * normal.y; // qmVector2DotProduct(vec, normal)
 
 	q_vector2 result = {
 		vec.x - normal.x * 2.0f * dot,
@@ -460,7 +468,7 @@ QM_API q_vector2 qmVector2Reflect(q_vector2 vec, q_vector2 normal)
 // Refraction function
 QM_API q_vector2 qmVector2Refract(q_vector2 vec, q_vector2 normal, q_float index)
 {
-	q_float dot = vec.x * normal.x + vec.y * normal.y;
+	q_float dot = vec.x * normal.x + vec.y * normal.y; // qmVector2DotProduct(vec, normal)
 	q_float diff = 1.0f - sqf(index) * (1.0f - sqf(dot));
 	if (diff < 0)
 	{
@@ -482,7 +490,7 @@ QM_API q_vector2 qmVector2Move(q_vector2 vec, q_vector2 target, q_float dist)
 		return vec;
 	}
 
-	q_float cdist = sqrtf(sqf(target.x - vec.x) + sqf(target.y - vec.y));
+	q_float cdist = sqrtf(sqf(target.x - vec.x) + sqf(target.y - vec.y)); // qmVector2Distance(target, vec)
 	if (cdist > dist)
 	{
 		return vec;
@@ -542,7 +550,7 @@ QM_API q_float qmVector2DistanceSq(q_vector2 left, q_vector2 right)
 QM_API q_float qmVector2Angle(q_vector2 left, q_vector2 right)
 {
   q_float det = left.x * right.y - left.y * right.x;
-  q_float dot = left.x * right.x + left.y * right.y;
+  q_float dot = left.x * right.x + left.y * right.y; // qmVector2DotProduct(left, right)
 	return atan2f(det, dot);
 }
 
@@ -679,13 +687,13 @@ QM_API q_vector3 qmVector3DivideScalar(q_vector3 vec, q_float scl)
 // Normalize function
 QM_API q_vector3 qmVector3Normalize(q_vector3 vec)
 {
-	q_float length = sqrtf(sqf(vec.x) + sqf(vec.y) + sqf(vec.z));
+	q_float length = sqrtf(sqf(vec.x) + sqf(vec.y) + sqf(vec.z)); // qmVector3Length(vec)
 	if (length == 0.0f)
 	{
 		return vec;
 	}
 
-	q_vector3 result = {
+	q_vector3 result = { // qmVector3DivideScale(vec, length)
 		vec.x / length,
 		vec.y / length,
 		vec.z / length
@@ -697,29 +705,29 @@ QM_API q_vector3 qmVector3Normalize(q_vector3 vec)
 QM_API q_void qmVector3Orthonormalize(q_vector3 *left, q_vector3 *right)
 {
 	q_vector3 vec = *left;
-	q_float len = sqrtf(sqf(vec.x) + sqf(vec.y) + sqf(vec.z));
-	if (len > 0.0f)
+	q_float len = sqrtf(sqf(vec.x) + sqf(vec.y) + sqf(vec.z)); // qmVector3Length(vec)
+	if (len > 0.0f) // qmVector3DivideScale(left, len)
 	{
 		left->x /= len;
 		left->y /= len;
 		left->z /= len;
 	}
 
-	q_vector3 lcross = {
+	q_vector3 lcross = { // qmVector3CrossProduct(left, right)
 		left->y * right->z - left->z * right->y,
 		left->z * right->x - left->x * right->z,
 		left->x * right->y - left->y * right->x
 	};
 	vec = lcross;
-	len = sqrtf(sqf(vec.x) + sqf(vec.y) + sqf(vec.z));
-	if (len > 0.0f)
+	len = sqrtf(sqf(vec.x) + sqf(vec.y) + sqf(vec.z)); // qmVector3Length(vec)
+	if (len > 0.0f) // qmVector3DivideScale(lcross, len)
 	{
 		lcross.x /= len;
 		lcross.y /= len;
 		lcross.z /= len;
 	}
 
-	q_vector3 rcross = {
+	q_vector3 rcross = { // qmVector3CrossProduct(lcross, left)
 		lcross.y * left->z - lcross.z * left->y,
 		lcross.z * left->x - lcross.x * left->z,
 		lcross.x * left->y - lcross.y * left->x
@@ -764,9 +772,9 @@ QM_API q_vector3 qmVector3Max(q_vector3 left, q_vector3 right)
 QM_API q_vector3 qmVector3Clamp(q_vector3 vec, q_vector3 min, q_vector3 max)
 {
 	q_vector3 result = {
-		max.x < min.x ? vec.x : fminf(fmaxf(vec.x, min.x), max.x),
-		max.y < min.y ? vec.y : fminf(fmaxf(vec.y, min.y), max.y),
-		max.z < min.z ? vec.z : fminf(fmaxf(vec.z, min.z), max.z)
+		max.x < min.x ? vec.x : fminf(fmaxf(vec.x, min.x), max.x), // qmFloatClamp(vec.x, min.x, max.x)
+		max.y < min.y ? vec.y : fminf(fmaxf(vec.y, min.y), max.y), // qmFloatClamp(vec.y, min.y, max.y)
+		max.z < min.z ? vec.z : fminf(fmaxf(vec.z, min.z), max.z)  // qmFloatClamp(vec.z, min.z, max.z)
 	};
 	return result;
 }
@@ -779,7 +787,7 @@ QM_API q_vector3 qmVector3ClampMag(q_vector3 vec, q_float min, q_float max)
 		return vec;
 	}
 
-	q_float length = sqrtf(sqf(vec.x) + sqf(vec.y) + sqf(vec.z));
+	q_float length = sqrtf(sqf(vec.x) + sqf(vec.y) + sqf(vec.z)); // qmVector3Length(vec)
 	if (length <= 0.0f)
 	{
 		return vec;
@@ -795,9 +803,10 @@ QM_API q_vector3 qmVector3ClampMag(q_vector3 vec, q_float min, q_float max)
 		scl = max / length;
 	}
 
-	q_vector3 result = {
+	q_vector3 result = { // qmVector3Scale(vec, scl)
 		vec.x * scl,
 		vec.y * scl,
+		vec.z * scl
 	};
 	return result;
 }
@@ -806,9 +815,9 @@ QM_API q_vector3 qmVector3ClampMag(q_vector3 vec, q_float min, q_float max)
 QM_API q_vector3 qmVector3Lerp(q_float value, q_vector3 start, q_vector3 end)
 {
 	q_vector3 result = {
-		start.x + value * (end.x - start.x),
-		start.y + value * (end.y - start.y),
-		start.z + value * (end.z - start.z)
+		start.x + value * (end.x - start.x), // qmFloatLerp(value, start.x, end.x)
+		start.y + value * (end.y - start.y), // qmFloatLerp(value, start.y, end.y)
+		start.z + value * (end.z - start.z)  // qmFloatLerp(value, start.z, end.z)
 	};
 	return result;
 }
@@ -816,11 +825,10 @@ QM_API q_vector3 qmVector3Lerp(q_float value, q_vector3 start, q_vector3 end)
 // Cubic hermite interpolation function
 QM_API q_vector3 qmVector3CubicHermite(q_float value, q_vector3 left, q_vector3 ltan, q_vector3 right, q_vector3 rtan)
 {
-	q_float cube = sqf(value) * value;
-	q_float p0 = cube * 2.0f - sqf(value) * 3.0f + 1.0f;
-	q_float p1 = cube - sqf(value) * 2.0f + value;
-	q_float p2 = cube * -2.0f + sqf(value) * 3.0f;
-	q_float p3 = cube - sqf(value);
+	q_float p0 = cbf(value) * 2.0f - sqf(value) * 3.0f + 1.0f;
+	q_float p1 = cbf(value) - sqf(value) * 2.0f + value;
+	q_float p2 = cbf(value) * -2.0f + sqf(value) * 3.0f;
+	q_float p3 = cbf(value) - sqf(value);
 
 	q_vector3 result = {
 		p0 * left.x + p1 * ltan.x + p2 * right.x + p3 * rtan.x,
@@ -858,7 +866,7 @@ QM_API q_vector3 qmVector3Perpendicular(q_vector3 vec)
     axis = a;
   }
 
-  q_vector3 result = {
+  q_vector3 result = { // qmVector3CrossProduct(vec, axis)
     vec.y * axis.z - vec.z * axis.y,
     vec.z * axis.x - vec.x * axis.z,
     vec.x * axis.y - vec.y * axis.x
@@ -868,27 +876,27 @@ QM_API q_vector3 qmVector3Perpendicular(q_vector3 vec)
 // Barycenter function
 QM_API q_vector3 qmVector3Barycenter(q_vector3 plane, q_vector3 v1, q_vector3 v2, q_vector3 v3)
 {
-	q_vector3 s1 = {
+	q_vector3 s1 = { // qmVector3Subtract(v2, v1)
 		v2.x - v1.x,
 		v2.y - v1.y,
 		v2.z - v1.z
 	};
-	q_vector3 s2 = {
+	q_vector3 s2 = { // qmVector3Subtract(v3, v1)
 		v3.x - v1.x,
 		v3.y - v1.y,
 		v3.z - v1.z
 	};
-	q_vector3 s3 = {
+	q_vector3 s3 = { // qmVector3Subtract(plane, v1)
 		plane.x - v1.x,
 		plane.y - v1.y,
 		plane.z - v1.z
 	};
 
-	q_float fs1 = sqf(s1.x) + sqf(s1.y) + sqf(s1.z);
-	q_float fs2 = sqf(s2.x) + sqf(s2.y) + sqf(s2.z);
-	q_float dot = s1.x * s2.x + s1.y * s2.y + s1.z * s2.z;
-	q_float dp1 = s1.x * s3.x + s1.y * s3.y + s1.z * s3.z;
-	q_float dp2 = s2.x * s3.x + s2.y * s3.y + s2.z * s3.z;
+	q_float fs1 = sqf(s1.x) + sqf(s1.y) + sqf(s1.z);       // qmVector3DistanceSq(s1)
+	q_float fs2 = sqf(s2.x) + sqf(s2.y) + sqf(s2.z);       // qmVector3DistanceSq(s2)
+	q_float dot = s1.x * s2.x + s1.y * s2.y + s1.z * s2.z; // qmVector3DotProduct(s1, s2)
+	q_float dp1 = s1.x * s3.x + s1.y * s3.y + s1.z * s3.z; // qmVector3DotProduct(s1, s3)
+	q_float dp2 = s2.x * s3.x + s2.y * s3.y + s2.z * s3.z; // qmVector3DotProduct(s2, s3)
 
 	q_float y = (fs2 * dp1 - dot * dp2) / (fs1 * fs2 - sqf(dot));
 	q_float z = (fs1 * dp2 - dot * dp1) / (fs1 * fs2 - sqf(dot));
@@ -903,7 +911,7 @@ QM_API q_vector3 qmVector3Barycenter(q_vector3 plane, q_vector3 v1, q_vector3 v2
 // Reflection function
 QM_API q_vector3 qmVector3Reflect(q_vector3 vec, q_vector3 normal)
 {
-	q_float dot = vec.x * normal.x + vec.y * normal.y + vec.z * normal.z;
+	q_float dot = vec.x * normal.x + vec.y * normal.y + vec.z * normal.z; // qmVector3DotProduct(vec, normal)
 
 	q_vector3 result = {
 		vec.x - normal.x * 2.0f * dot,
@@ -916,7 +924,7 @@ QM_API q_vector3 qmVector3Reflect(q_vector3 vec, q_vector3 normal)
 // Refraction function
 QM_API q_vector3 qmVector3Refract(q_vector3 vec, q_vector3 normal, q_float index)
 {
-	q_float dot = vec.x * normal.x + vec.y * normal.y + vec.z * normal.z;
+	q_float dot = vec.x * normal.x + vec.y * normal.y + vec.z * normal.z; // qmVector3DotProduct(vec, normal)
 	q_float diff = 1.0f - sqf(index) * (1.0f - sqf(dot));
 	if (diff < 0)
 	{
@@ -934,11 +942,11 @@ QM_API q_vector3 qmVector3Refract(q_vector3 vec, q_vector3 normal, q_float index
 // Projection function
 QM_API q_vector3 qmVector3Project(q_vector3 vec, q_vector3 target)
 {
-	q_float dot = vec.x * target.x + vec.y * target.y + vec.z * target.z;
-	q_float len = sqf(target.x) + sqf(target.y) + sqf(target.z);
+	q_float dot = vec.x * target.x + vec.y * target.y + vec.z * target.z; // qmVector3DotProduct(vec, target)
+	q_float len = sqf(target.x) + sqf(target.y) + sqf(target.z);          // qmVector3LengthSq(target)
 	q_float mag = dot / len;
 
-	q_vector3 result = {
+	q_vector3 result = { // qmVector3Scale(target, mag)
 		target.x * mag,
 		target.y * mag,
 		target.z * mag
@@ -949,11 +957,11 @@ QM_API q_vector3 qmVector3Project(q_vector3 vec, q_vector3 target)
 // Rejection function
 QM_API q_vector3 qmVector3Reject(q_vector3 vec, q_vector3 target)
 {
-	q_float dot = vec.x * target.x + vec.y * target.y + vec.z * target.z;
-	q_float len = sqf(target.x) + sqf(target.y) + sqf(target.z);
+	q_float dot = vec.x * target.x + vec.y * target.y + vec.z * target.z; // qmVector3DotProduct(vec, target)
+	q_float len = sqf(target.x) + sqf(target.y) + sqf(target.z);          // qmVector3LengthSq(target)
 	q_float mag = dot / len;
 
-	q_vector3 result = {
+	q_vector3 result = { // qmVector3Subtract(vec, qmVector3Scale(target, mag))
 		vec.x - target.x * mag,
 		vec.y - target.y * mag,
 		vec.z - target.z * mag
@@ -964,8 +972,8 @@ QM_API q_vector3 qmVector3Reject(q_vector3 vec, q_vector3 target)
 // Rotate by axis function
 QM_API q_vector3 qmVector3RotateByAxis(q_vector3 vec, q_vector3 axis, q_float angle)
 {
-	q_float alen = sqrtf(sqf(axis.x) + sqf(axis.y) + sqf(axis.z));
-	if (alen > 0.0f)
+	q_float alen = sqrtf(sqf(axis.x) + sqf(axis.y) + sqf(axis.z)); // qmVector3Length(axis)
+	if (alen > 0.0f) // qmVector3DivideScalar(axis, alen)
 	{
 		axis.x /= alen;
 		axis.y /= alen;
@@ -974,19 +982,19 @@ QM_API q_vector3 qmVector3RotateByAxis(q_vector3 vec, q_vector3 axis, q_float an
 
 	angle /= 2.0f;
 	q_float a = sinf(angle);
-	q_vector3 w = {
+	q_vector3 w = { // qmVector3Scale(axis, a)
 		axis.x * a,
 		axis.y * a,
 		axis.z * a
 	};
 	a = cosf(angle);
 
-	q_vector3 cross = {
+	q_vector3 cross = { // qmVector3CrossProduct(w, vec)
 		w.y * vec.z - w.z * vec.y,
 		w.z * vec.x - w.x * vec.z,
 		w.x * vec.y - w.y * vec.x
 	};
-	q_vector3 dcross = {
+	q_vector3 dcross = { // qmVector3CrossProduct(w, cross)
 		w.y * cross.z - w.z * cross.y,
 		w.z * cross.x - w.x * cross.z,
 		w.x * cross.y - w.y * cross.x
@@ -1008,7 +1016,7 @@ QM_API q_vector3 qmVector3Move(q_vector3 vec, q_vector3 target, q_float dist)
 		return vec;
 	}
 
-	q_float cdist = sqrtf(sqf(target.x - vec.x) + sqf(target.y - vec.y) + sqf(target.z - vec.z));
+	q_float cdist = sqrtf(sqf(target.x - vec.x) + sqf(target.y - vec.y) + sqf(target.z - vec.z)); // qmVector3Distance(target, vec)
 	if (cdist > dist)
 	{
 		return vec;
@@ -1055,14 +1063,14 @@ QM_API q_float qmVector3DistanceSq(q_vector3 left, q_vector3 right)
 // Angle function
 QM_API q_float qmVector3Angle(q_vector3 left, q_vector3 right)
 {
-  q_vector3 cross = {
+  q_vector3 cross = { // qmVector3CrossProduct(left, right)
     left.y * right.z - left.z * right.y,
 	left.z * right.x - left.x * right.z,
 	left.x * right.y - left.y * right.x
   };
 
-  q_float len = sqrtf(sqf(cross.x) + sqf(cross.y) + sqf(cross.z));
-  q_float dot = left.x * right.x + left.y * right.y + left.z * right.z;
+  q_float len = sqrtf(sqf(cross.x) + sqf(cross.y) + sqf(cross.z));      // qmVector3Length(cross)
+  q_float dot = left.x * right.x + left.y * right.y + left.z * right.z; // qmVector3DotProduct(left, right)
   return atan2f(len, dot);
 }
 
