@@ -30,17 +30,15 @@
 #endif /* defined(Q_MATH_IMPLEMENTATION) && defined(Q_MATH_STATIC_INLINE) */
 
 #if defined(Q_MATH_IMPLEMENTATION)
-	#if defined(_WIN32)
-		#if defined(Q_EXPORT_SHARED_LIBRARY)
-			#define QM_API __declspec(dllexport)
-		#elif defined(Q_IMPORT_SHARED_LIBRARY)
-			#define QM_API __declspec(dllimport)
-		#endif /* defined(Q_EXPORT_SHARED_LIBRARY)... */
+	#if defined(_WIN32) && defined(Q_EXPORT_SHARED_LIBRARY)
+		#define QM_API __declspec(dllexport)
+	#elif defined(_WIN32) && defined(Q_IMPORT_SHARED_LIBRARY)
+		#define QM_API __declspec(dllimport)
 	#elif defined(Q_EXPORT_SHARED_LIBRARY)
 		#define QM_API __attribute__((visibility("default")))
 	#else
 		#define QM_API extern inline
-	#endif /* defined(_WIN32)... */
+	#endif /* defined(_WIN32) && defined(Q_EXPORT_SHARED_LIBRARY)... */
 #elif defined(Q_MATH_STATIC_INLINE)
 	#define QM_API static inline
 #else
@@ -79,14 +77,14 @@
 	{
 		q_float x;
 		q_float y;
-	} q_vector2, qt_vec2;
+	} q_vector2;
 
 	typedef struct q_vector3
 	{
 		q_float x;
 		q_float y;
 		q_float z;
-	} q_vector3, qt_vec3;
+	} q_vector3;
 
 	typedef struct q_vector4
 	{
@@ -94,7 +92,13 @@
 		q_float y;
 		q_float z;
 		q_float w;
-	} q_vector4, qt_vec4;
+	} q_vector4;
+
+	#if defined(Q_ENABLE_TYPE_ALIAS)
+		typedef q_vector2 qt_vec2;
+		typedef q_vector3 qt_vec3;
+		typedef q_vector4 qt_vec4;
+	#endif /* defined(Q_ENABLE_TYPE_ALIAS) */
 #endif /* Q_VECTOR */
 
 #ifndef Q_MATRIX
@@ -104,40 +108,40 @@
 	{
 		q_float m0, m2;
 		q_float m1, m3;
-	} q_matrix22, qt_mat22, qt_mat2;
+	} q_matrix22;
 
 	typedef struct q_matrix23
 	{
 		q_float m0, m2, m4;
 		q_float m1, m3, m5;
-	} q_matrix23, qt_mat23;
+	} q_matrix23;
 
 	typedef struct q_matrix24
 	{
 		q_float m0, m2, m4, m6;
 		q_float m1, m3, m5, m7;
-	} q_matrix24, qt_mat24;
+	} q_matrix24;
 
 	typedef struct q_matrix32
 	{
 		q_float m0, m3;
 		q_float m1, m4;
 		q_float m2, m5;
-	} q_matrix32, qt_mat32;
+	} q_matrix32;
 
 	typedef struct q_matrix33
 	{
 		q_float m0, m3, m6;
 		q_float m1, m4, m7;
 		q_float m2, m5, m8;
-	} q_matrix33, qt_mat33, qt_mat3;
+	} q_matrix33;
 
 	typedef struct q_matrix34
 	{
 		q_float m0, m3, m6, m9;
 		q_float m1, m4, m7, m10;
 		q_float m2, m5, m8, m11;
-	} q_matrix34, qt_mat34;
+	} q_matrix34;
 
 	typedef struct q_matrix42
 	{
@@ -145,7 +149,7 @@
 		q_float m1, m5;
 		q_float m2, m6;
 		q_float m3, m7;
-	} q_matrix42, qt_mat42;
+	} q_matrix42;
 
 	typedef struct q_matrix43
 	{
@@ -153,7 +157,7 @@
 		q_float m1, m5, m9;
 		q_float m2, m6, m10;
 		q_float m3, m7, m11;
-	} q_matrix43, qt_mat43;
+	} q_matrix43;
 
 	typedef struct q_matrix44
 	{
@@ -161,7 +165,19 @@
 		q_float m1, m5, m9, m13;
 		q_float m2, m6, m10, m14;
 		q_float m3, m7, m11, m15;
-	} q_matrix44, qt_mat44, qt_mat4;
+	} q_matrix44;
+
+	#if defined(Q_ENABLE_TYPE_ALIAS)
+		typedef q_matrix22 qt_mat22, qt_mat2;
+		typedef q_matrix23 qt_mat23;
+		typedef q_matrix24 qt_mat24;
+		typedef q_matrix32 qt_mat32;
+		typedef q_matrix33 qt_mat33, qt_mat3;
+		typedef q_matrix34 qt_mat34;
+		typedef q_matrix42 qt_mat42;
+		typedef q_matrix43 qt_mat43;
+		typedef q_matrix44 qt_mat44, qt_mat4;
+	#endif /* defined(Q_ENABLE_TYPE_ALIAS) */
 #endif /* Q_MATRIX */
 
 //// Quaternion type ////
@@ -169,7 +185,11 @@
 #ifndef Q_QUATERNION
 	#define Q_QUATERNION
 
-	typedef q_vector4 q_quaternion, qt_quat;
+	typedef q_vector4 q_quaternion;
+
+	#if defined(Q_ENABLE_TYPE_ALIAS)
+		typedef q_quaternion qt_quat;
+	#endif /* defined(Q_ENABLE_TYPE_ALIAS) */
 #endif /* Q_QUATERNION */
 
 //// Internal functions ////
