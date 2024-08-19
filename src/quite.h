@@ -51,9 +51,11 @@
 typedef void q_void, *q_voidp;
 typedef q_voidp q_handle;
 
-typedef q_void qt_v;
-
 #define q_null NULL
+
+#if defined(Q_ENABLE_TYPE_ALIAS)
+	typedef q_void qt_v;
+#endif /* defined(Q_ENABLE_TYPE_ALIAS) */
 
 //// Integer types ////
 

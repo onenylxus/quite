@@ -1104,6 +1104,272 @@ QM_API q_bool qmVector3Equal(q_vector3 left, q_vector3 right)
 	);
 }
 
+//// Vector4 functions ////
+
+// Zero vector function
+QM_API q_vector4 qmVector4Zero(q_void)
+{
+	q_vector4 result = {0.0f, 0.0f, 0.0f, 0.0f};
+	return result;
+}
+
+// One vector function
+QM_API q_vector4 qmVector4One(q_void)
+{
+	q_vector4 result = {1.0f, 1.0f, 1.0f, 1.0f};
+	return result;
+}
+
+// Add function
+QM_API q_vector4 qmVector4Add(q_vector4 left, q_vector4 right)
+{
+	q_vector4 result = {
+		left.x + right.x,
+		left.y + right.y,
+		left.z + right.z,
+		left.w + right.w
+	};
+	return result;
+}
+
+// Scalar add function
+QM_API q_vector4 qmVector4AddScalar(q_vector4 vec, q_float scl)
+{
+	q_vector4 result = {
+		vec.x + scl,
+		vec.y + scl,
+		vec.z + scl,
+		vec.w + scl
+	};
+	return result;
+}
+
+// Subtract function
+QM_API q_vector4 qmVector4Subtract(q_vector4 left, q_vector4 right)
+{
+	q_vector4 result = {
+		left.x - right.x,
+		left.y - right.y,
+		left.z - right.z,
+		left.w - right.w
+	};
+	return result;
+}
+
+// Scalar subtract function
+QM_API q_vector4 qmVector4SubtractScalar(q_vector4 vec, q_float scl)
+{
+	q_vector4 result = {
+		vec.x - scl,
+		vec.y - scl,
+		vec.z - scl,
+		vec.w - scl
+	};
+	return result;
+}
+
+// Multiply function
+QM_API q_vector4 qmVector4Multiply(q_vector4 left, q_vector4 right)
+{
+	q_vector4 result = {
+		left.x * right.x,
+		left.y * right.y,
+		left.z * right.z,
+		left.w * right.w
+	};
+	return result;
+}
+
+// Scale function
+QM_API q_vector4 qmVector4Scale(q_vector4 vec, q_float scl)
+{
+	q_vector4 result = {
+		vec.x * scl,
+		vec.y * scl,
+		vec.z * scl,
+		vec.w * scl
+	};
+	return result;
+}
+
+// Negate function
+QM_API q_vector4 qmVector4Negate(q_vector4 vec)
+{
+	q_vector4 result = {
+		-vec.x,
+		-vec.y,
+		-vec.z,
+		-vec.w
+	};
+	return result;
+}
+
+// Divide function
+QM_API q_vector4 qmVector4Divide(q_vector4 left, q_vector4 right)
+{
+	q_vector4 result = {
+		left.x / right.x,
+		left.y / right.y,
+		left.z / right.z,
+		left.w / right.w
+	};
+	return result;
+}
+
+// Scalar divide function
+QM_API q_vector4 qmVector4DivideScalar(q_vector4 vec, q_float scl)
+{
+	q_vector4 result = {
+		vec.x / scl,
+		vec.y / scl,
+		vec.z / scl,
+		vec.w / scl
+	};
+	return result;
+}
+
+// Normalize function
+QM_API q_vector4 qmVector4Normalize(q_vector4 vec)
+{
+	q_float length = sqrtf(sqf(vec.x) + sqf(vec.y) + sqf(vec.z) + sqf(vec.w)); // qmVector4Length(vec)
+	if (length == 0.0f)
+	{
+		return vec;
+	}
+
+	q_vector4 result = { // qmVector3DivideScale(vec, length)
+		vec.x / length,
+		vec.y / length,
+		vec.z / length,
+		vec.w / length
+	};
+	return result;
+}
+
+// Invert function
+QM_API q_vector4 qmVector4Invert(q_vector4 vec)
+{
+	q_vector4 result = {
+		1.0f / vec.x,
+		1.0f / vec.y,
+		1.0f / vec.z,
+		1.0f / vec.w
+	};
+	return result;
+}
+
+// Minimum function
+QM_API q_vector4 qmVector4Min(q_vector4 left, q_vector4 right)
+{
+	q_vector4 result = {
+		fminf(left.x, right.x),
+		fminf(left.y, right.y),
+		fminf(left.z, right.z),
+		fminf(left.w, right.w)
+	};
+	return result;
+}
+
+// Maximum function
+QM_API q_vector4 qmVector4Max(q_vector4 left, q_vector4 right)
+{
+	q_vector4 result = {
+		fmaxf(left.x, right.x),
+		fmaxf(left.y, right.y),
+		fmaxf(left.z, right.z),
+		fmaxf(left.w, right.w)
+	};
+	return result;
+}
+
+// Clamp function
+QM_API q_vector4 qmVector4Clamp(q_vector4 vec, q_vector4 min, q_vector4 max)
+{
+	q_vector4 result = {
+		max.x < min.x ? vec.x : fminf(fmaxf(vec.x, min.x), max.x), // qmFloatClamp(vec.x, min.x, max.x)
+		max.y < min.y ? vec.y : fminf(fmaxf(vec.y, min.y), max.y), // qmFloatClamp(vec.y, min.y, max.y)
+		max.z < min.z ? vec.z : fminf(fmaxf(vec.z, min.z), max.z), // qmFloatClamp(vec.z, min.z, max.z)
+		max.w < min.w ? vec.w : fminf(fmaxf(vec.w, min.w), max.w)  // qmFloatClamp(vec.w, min.w, max.w)
+	};
+	return result;
+}
+
+// Linear interpolation function
+QM_API q_vector4 qmVector4Lerp(q_float value, q_vector4 start, q_vector4 end)
+{
+	q_vector4 result = {
+		start.x + value * (end.x - start.x), // qmFloatLerp(value, start.x, end.x)
+		start.y + value * (end.y - start.y), // qmFloatLerp(value, start.y, end.y)
+		start.z + value * (end.z - start.z), // qmFloatLerp(value, start.z, end.z)
+		start.w + value * (end.w - start.w)  // qmFloatLerp(value, start.w, end.w)
+	};
+	return result;
+}
+
+// Move function
+QM_API q_vector4 qmVector4Move(q_vector4 vec, q_vector4 target, q_float dist)
+{
+	if (dist <= 0.0f)
+	{
+		return vec;
+	}
+
+	q_float cdist = sqrtf(sqf(target.x - vec.x) + sqf(target.y - vec.y) + sqf(target.z - vec.z) + sqf(target.w - vec.w)); // qmVector4Distance(target, vec)
+	if (cdist > dist)
+	{
+		return vec;
+	}
+
+	q_vector4 result = {
+		vec.x + dist / cdist * (target.x - vec.x),
+		vec.y + dist / cdist * (target.y - vec.y),
+		vec.z + dist / cdist * (target.z - vec.z),
+		vec.w + dist / cdist * (target.w - vec.w)
+	};
+	return result;
+}
+
+// Length function
+QM_API q_float qmVector4Length(q_vector4 vec)
+{
+	return sqrtf(sqf(vec.x) + sqf(vec.y) + sqf(vec.z) + sqf(vec.w));
+}
+
+// Squared length function
+QM_API q_float qmVector4LengthSq(q_vector4 vec)
+{
+	return sqf(vec.x) + sqf(vec.y) + sqf(vec.z) + sqf(vec.w);
+}
+
+// Dot product function
+QM_API q_float qmVector4DotProduct(q_vector4 left, q_vector4 right)
+{
+	return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
+}
+
+// Distance function
+QM_API q_float qmVector4Distance(q_vector4 left, q_vector4 right)
+{
+	return sqrtf(sqf(left.x - right.x) + sqf(left.y - right.y) + sqf(left.z - right.z) + sqf(left.w - right.w));
+}
+
+// Squared distance function
+QM_API q_float qmVector4DistanceSq(q_vector4 left, q_vector4 right)
+{
+	return sqf(left.x - right.x) + sqf(left.y - right.y) + sqf(left.z - right.z) + sqf(left.w - right.w);
+}
+
+// Equal function
+QM_API q_bool qmVector4Equal(q_vector4 left, q_vector4 right)
+{
+	return Q_BOOL(
+		equalf(left.x, right.x) &&
+		equalf(left.y, right.y) &&
+		equalf(left.z, right.z) &&
+		equalf(left.w, right.w)
+	);
+}
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
