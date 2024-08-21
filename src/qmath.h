@@ -1370,6 +1370,117 @@ QM_API q_bool qmVector4Equal(q_vector4 left, q_vector4 right)
 	);
 }
 
+//// Matrix22 functions ////
+
+// Zero matrix function
+QM_API q_matrix22 qmMatrix22Zero(q_void)
+{
+	q_matrix22 result = {
+		0.0f, 0.0f,
+		0.0f, 0.0f
+	};
+	return result;
+}
+
+// One matrix function
+QM_API q_matrix22 qmMatrix22One(q_void)
+{
+	q_matrix22 result = {
+		1.0f, 1.0f,
+		1.0f, 1.0f
+	};
+	return result;
+}
+
+// Identity matrix function
+QM_API q_matrix22 qmMatrix22Identity(q_void)
+{
+	q_matrix22 result = {
+		1.0f, 0.0f,
+		0.0f, 1.0f
+	};
+	return result;
+}
+
+// Add function
+QM_API q_matrix22 qmMatrix22Add(q_matrix22 left, q_matrix22 right)
+{
+	q_matrix22 result = {
+		left.m0 + right.m0, left.m2 + right.m2,
+		left.m1 + right.m1, left.m3 + right.m3
+	};
+	return result;
+}
+
+// Subtract function
+QM_API q_matrix22 qmMatrix22Subtract(q_matrix22 left, q_matrix22 right)
+{
+	q_matrix22 result = {
+		left.m0 - right.m0, left.m2 - right.m2,
+		left.m1 - right.m1, left.m3 - right.m3
+	};
+	return result;
+}
+
+// Multiply function
+QM_API q_matrix22 qmMatrix22Multiply(q_matrix22 left, q_matrix22 right)
+{
+	q_matrix22 result = {
+		left.m0 * right.m0 + left.m2 * right.m1, left.m0 * right.m2 + left.m2 * right.m3,
+		left.m1 * right.m0 + left.m3 * right.m1, left.m1 * right.m2 + left.m3 * right.m3
+	};
+	return result;
+}
+
+// Transpose function
+QM_API q_matrix22 qmMatrix22Transpose(q_matrix22 mat)
+{
+	q_matrix22 result = {
+		mat.m0, mat.m1,
+		mat.m2, mat.m3
+	};
+	return result;
+}
+
+// Inverse function
+QM_API q_matrix22 qmMatrix22Inverse(q_matrix22 mat)
+{
+	q_float det = mat.m0 * mat.m3 - mat.m1 * mat.m2; // qmMatrix22Determinant(mat)
+	if (det == 0)
+	{
+		return mat;
+	}
+
+	q_matrix22 result = {
+		mat.m3 / det, -mat.m2 / det,
+		-mat.m1 / det, mat.m0 / det
+	};
+	return result;
+}
+
+// Determinant function
+QM_API q_float qmMatrix22Determinant(q_matrix22 mat)
+{
+	return mat.m0 * mat.m3 - mat.m1 * mat.m2;
+}
+
+// Trace function
+QM_API q_float qmMatrix22Trace(q_matrix22 mat)
+{
+	return mat.m0 + mat.m3;
+}
+
+// Equal function
+QM_API q_bool qmMatrix22Equal(q_matrix22 left, q_matrix22 right)
+{
+  return Q_BOOL(
+    equalf(left.m0, right.m0) &&
+    equalf(left.m1, right.m1) &&
+    equalf(left.m2, right.m2) &&
+    equalf(left.m3, right.m3)
+  );
+}
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
