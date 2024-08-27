@@ -569,8 +569,8 @@ QM_API q_float qmVector2DistanceSq(q_vector2 left, q_vector2 right)
 // Angle function
 QM_API q_float qmVector2Angle(q_vector2 left, q_vector2 right)
 {
-  q_float det = left.x * right.y - left.y * right.x;
-  q_float dot = left.x * right.x + left.y * right.y; // qmVector2DotProduct(left, right)
+	q_float det = left.x * right.y - left.y * right.x;
+	q_float dot = left.x * right.x + left.y * right.y; // qmVector2DotProduct(left, right)
 	return atan2f(det, dot);
 }
 
@@ -872,25 +872,25 @@ QM_API q_vector3 qmVector3CrossProduct(q_vector3 left, q_vector3 right)
 // Perpendicular function
 QM_API q_vector3 qmVector3Perpendicular(q_vector3 vec)
 {
-  q_float min = fabsf(vec.x);
-  q_vector3 axis = {1.0f, 0.0f, 0.0f};
-  if (fabsf(vec.y) < min)
-  {
-    q_vector3 a = {0.0f, 1.0f, 0.0f};
-    min = fabsf(vec.y);
-    axis = a;
-  }
-  if (fabsf(vec.z) < min)
-  {
-    q_vector3 a = {0.0f, 0.0f, 1.0f};
-    axis = a;
-  }
+	q_float min = fabsf(vec.x);
+	q_vector3 axis = {1.0f, 0.0f, 0.0f};
+	if (fabsf(vec.y) < min)
+	{
+		q_vector3 a = {0.0f, 1.0f, 0.0f};
+		min = fabsf(vec.y);
+		axis = a;
+	}
+	if (fabsf(vec.z) < min)
+	{
+		q_vector3 a = {0.0f, 0.0f, 1.0f};
+		axis = a;
+	}
 
-  q_vector3 result = { // qmVector3CrossProduct(vec, axis)
-    vec.y * axis.z - vec.z * axis.y,
-    vec.z * axis.x - vec.x * axis.z,
-    vec.x * axis.y - vec.y * axis.x
-  };
+	q_vector3 result = { // qmVector3CrossProduct(vec, axis)
+		vec.y * axis.z - vec.z * axis.y,
+		vec.z * axis.x - vec.x * axis.z,
+		vec.x * axis.y - vec.y * axis.x
+	};
 }
 
 // Barycenter function
@@ -1083,15 +1083,15 @@ QM_API q_float qmVector3DistanceSq(q_vector3 left, q_vector3 right)
 // Angle function
 QM_API q_float qmVector3Angle(q_vector3 left, q_vector3 right)
 {
-  q_vector3 cross = { // qmVector3CrossProduct(left, right)
-    left.y * right.z - left.z * right.y,
-	left.z * right.x - left.x * right.z,
-	left.x * right.y - left.y * right.x
+	q_vector3 cross = { // qmVector3CrossProduct(left, right)
+		left.y * right.z - left.z * right.y,
+		left.z * right.x - left.x * right.z,
+		left.x * right.y - left.y * right.x
   };
 
-  q_float len = sqrtf(sqf(cross.x) + sqf(cross.y) + sqf(cross.z));      // qmVector3Length(cross)
-  q_float dot = left.x * right.x + left.y * right.y + left.z * right.z; // qmVector3DotProduct(left, right)
-  return atan2f(len, dot);
+	q_float len = sqrtf(sqf(cross.x) + sqf(cross.y) + sqf(cross.z));      // qmVector3Length(cross)
+	q_float dot = left.x * right.x + left.y * right.y + left.z * right.z; // qmVector3DotProduct(left, right)
+	return atan2f(len, dot);
 }
 
 // Equal function
@@ -1524,12 +1524,12 @@ QM_API q_float qmMatrix22Trace(q_matrix22 mat)
 // Equal function
 QM_API q_bool qmMatrix22Equal(q_matrix22 left, q_matrix22 right)
 {
-  return Q_BOOL(
-    equalf(left.m0, right.m0) &&
-    equalf(left.m1, right.m1) &&
-    equalf(left.m2, right.m2) &&
-    equalf(left.m3, right.m3)
-  );
+	return Q_BOOL(
+		equalf(left.m0, right.m0) &&
+		equalf(left.m1, right.m1) &&
+		equalf(left.m2, right.m2) &&
+		equalf(left.m3, right.m3)
+	);
 }
 
 //// Matrix23 functions ////
@@ -1649,14 +1649,14 @@ QM_API q_matrix32 qmMatrix23Transpose(q_matrix23 mat)
 // Equal function
 QM_API q_bool qmMatrix23Equal(q_matrix23 left, q_matrix23 right)
 {
-  return Q_BOOL(
-    equalf(left.m0, right.m0) &&
-    equalf(left.m1, right.m1) &&
-    equalf(left.m2, right.m2) &&
-    equalf(left.m3, right.m3) &&
-	  equalf(left.m4, right.m4) &&
-	  equalf(left.m5, right.m5)
-  );
+	return Q_BOOL(
+		equalf(left.m0, right.m0) &&
+		equalf(left.m1, right.m1) &&
+		equalf(left.m2, right.m2) &&
+		equalf(left.m3, right.m3) &&
+		equalf(left.m4, right.m4) &&
+		equalf(left.m5, right.m5)
+	);
 }
 
 //// Matrix24 functions ////
@@ -1717,49 +1717,49 @@ QM_API q_matrix22 qmMatrix24MultiplyMatrix42(q_matrix24 left, q_matrix42 right)
 	q_float m0 = left.m0 * right.m0 + left.m2 * right.m1 + left.m4 * right.m2 + left.m6 * right.m3;
 	q_float m1 = left.m1 * right.m0 + left.m3 * right.m1 + left.m5 * right.m2 + left.m7 * right.m3;
 	q_float m2 = left.m0 * right.m4 + left.m2 * right.m5 + left.m4 * right.m6 + left.m6 * right.m7;
-  q_float m3 = left.m1 * right.m4 + left.m3 * right.m5 + left.m5 * right.m6 + left.m7 * right.m7;
+	q_float m3 = left.m1 * right.m4 + left.m3 * right.m5 + left.m5 * right.m6 + left.m7 * right.m7;
 
-  q_matrix22 result = {
-    m0, m2,
-    m1, m3
-  };
-  return result;
+	q_matrix22 result = {
+		m0, m2,
+		m1, m3
+	};
+	return result;
 }
 
 // Multiply Matrix43 function
 QM_API q_matrix23 qmMatrix24MultiplyMatrix43(q_matrix24 left, q_matrix43 right)
 {
-  q_float m0 = left.m0 * right.m0 + left.m2 * right.m1 + left.m4 * right.m2 + left.m6 * right.m3;
-  q_float m1 = left.m1 * right.m0 + left.m3 * right.m1 + left.m5 * right.m2 + left.m7 * right.m3;
+	q_float m0 = left.m0 * right.m0 + left.m2 * right.m1 + left.m4 * right.m2 + left.m6 * right.m3;
+	q_float m1 = left.m1 * right.m0 + left.m3 * right.m1 + left.m5 * right.m2 + left.m7 * right.m3;
 	q_float m2 = left.m0 * right.m4 + left.m2 * right.m5 + left.m4 * right.m6 + left.m6 * right.m7;
-  q_float m3 = left.m1 * right.m4 + left.m3 * right.m5 + left.m5 * right.m6 + left.m7 * right.m7;
-  q_float m4 = left.m0 * right.m8 + left.m2 * right.m9 + left.m4 * right.m10 + left.m6 * right.m11;
-  q_float m5 = left.m1 * right.m8 + left.m3 * right.m9 + left.m5 * right.m10 + left.m7 * right.m11;
+	q_float m3 = left.m1 * right.m4 + left.m3 * right.m5 + left.m5 * right.m6 + left.m7 * right.m7;
+	q_float m4 = left.m0 * right.m8 + left.m2 * right.m9 + left.m4 * right.m10 + left.m6 * right.m11;
+	q_float m5 = left.m1 * right.m8 + left.m3 * right.m9 + left.m5 * right.m10 + left.m7 * right.m11;
 
-  q_matrix23 result = {
-    m0, m2, m4,
-    m1, m3, m5
-  };
-  return result;
+	q_matrix23 result = {
+		m0, m2, m4,
+		m1, m3, m5
+	};
+	return result;
 }
 
 // Multiply Matrix44 function
 QM_API q_matrix24 qmMatrix24MultiplyMatrix44(q_matrix24 left, q_matrix44 right)
 {
-  q_float m0 = left.m0 * right.m0 + left.m2 * right.m1 + left.m4 * right.m2 + left.m6 * right.m3;
-  q_float m1 = left.m1 * right.m0 + left.m3 * right.m1 + left.m5 * right.m2 + left.m7 * right.m3;
+	q_float m0 = left.m0 * right.m0 + left.m2 * right.m1 + left.m4 * right.m2 + left.m6 * right.m3;
+	q_float m1 = left.m1 * right.m0 + left.m3 * right.m1 + left.m5 * right.m2 + left.m7 * right.m3;
 	q_float m2 = left.m0 * right.m4 + left.m2 * right.m5 + left.m4 * right.m6 + left.m6 * right.m7;
-  q_float m3 = left.m1 * right.m4 + left.m3 * right.m5 + left.m5 * right.m6 + left.m7 * right.m7;
-  q_float m4 = left.m0 * right.m8 + left.m2 * right.m9 + left.m4 * right.m10 + left.m6 * right.m11;
-  q_float m5 = left.m1 * right.m8 + left.m3 * right.m9 + left.m5 * right.m10 + left.m7 * right.m11;
-  q_float m6 = left.m0 * right.m12 + left.m2 * right.m13 + left.m4 * right.m14 + left.m6 * right.m15;
-  q_float m7 = left.m1 * right.m12 + left.m3 * right.m13 + left.m5 * right.m14 + left.m7 * right.m15;
+	q_float m3 = left.m1 * right.m4 + left.m3 * right.m5 + left.m5 * right.m6 + left.m7 * right.m7;
+	q_float m4 = left.m0 * right.m8 + left.m2 * right.m9 + left.m4 * right.m10 + left.m6 * right.m11;
+	q_float m5 = left.m1 * right.m8 + left.m3 * right.m9 + left.m5 * right.m10 + left.m7 * right.m11;
+	q_float m6 = left.m0 * right.m12 + left.m2 * right.m13 + left.m4 * right.m14 + left.m6 * right.m15;
+	q_float m7 = left.m1 * right.m12 + left.m3 * right.m13 + left.m5 * right.m14 + left.m7 * right.m15;
 
-  q_matrix24 result = {
-    m0, m2, m4, m6,
-    m1, m3, m5, m7
-  };
-  return result;
+	q_matrix24 result = {
+		m0, m2, m4, m6,
+		m1, m3, m5, m7
+	};
+	return result;
 }
 
 // Transpose function
@@ -1769,7 +1769,7 @@ QM_API q_matrix42 qmMatrix24Transpose(q_matrix24 mat)
 		mat.m0, mat.m1,
 		mat.m2, mat.m3,
 		mat.m4, mat.m5,
-    mat.m6, mat.m7
+		mat.m6, mat.m7
 	};
 	return result;
 }
@@ -1777,16 +1777,159 @@ QM_API q_matrix42 qmMatrix24Transpose(q_matrix24 mat)
 // Equal function
 QM_API q_bool qmMatrix24Equal(q_matrix24 left, q_matrix24 right)
 {
-  return Q_BOOL(
-    equalf(left.m0, right.m0) &&
-    equalf(left.m1, right.m1) &&
-    equalf(left.m2, right.m2) &&
-    equalf(left.m3, right.m3) &&
-	  equalf(left.m4, right.m4) &&
-	  equalf(left.m5, right.m5) &&
-    equalf(left.m6, right.m6) &&
-    equalf(left.m7, right.m7)
-  );
+	return Q_BOOL(
+		equalf(left.m0, right.m0) &&
+		equalf(left.m1, right.m1) &&
+		equalf(left.m2, right.m2) &&
+		equalf(left.m3, right.m3) &&
+		equalf(left.m4, right.m4) &&
+		equalf(left.m5, right.m5) &&
+		equalf(left.m6, right.m6) &&
+		equalf(left.m7, right.m7)
+	);
+}
+
+//// Matrix32 functions ////
+
+// Zero matrix function
+QM_API q_matrix32 qmMatrix32Zero(q_void)
+{
+	q_matrix32 result = {
+		0.0f, 0.0f,
+		0.0f, 0.0f,
+		0.0f, 0.0f
+	};
+	return result;
+}
+
+// One matrix function
+QM_API q_matrix32 qmMatrix32One(q_void)
+{
+	q_matrix32 result = {
+		1.0f, 1.0f,
+		1.0f, 1.0f,
+		1.0f, 1.0f
+	};
+	return result;
+}
+
+// Add function
+QM_API q_matrix32 qmMatrix32Add(q_matrix32 left, q_matrix32 right)
+{
+	q_matrix32 result = {
+		left.m0 + right.m0, left.m3 + right.m3,
+		left.m1 + right.m1, left.m4 + right.m4,
+		left.m2 + right.m2, left.m5 + right.m5
+	};
+	return result;
+}
+
+// Subtract function
+QM_API q_matrix32 qmMatrix32Subtract(q_matrix32 left, q_matrix32 right)
+{
+	q_matrix32 result = {
+		left.m0 - right.m0, left.m3 - right.m3,
+		left.m1 - right.m1, left.m4 - right.m4,
+		left.m2 - right.m2, left.m5 - right.m5
+	};
+	return result;
+}
+
+// Multiply Vector2 function
+QM_API q_vector3 qmMatrix32MultiplyVector2(q_matrix32 mat, q_vector2 vec)
+{
+	q_vector3 result = {
+		mat.m0 * vec.x + mat.m3 * vec.y,
+		mat.m1 * vec.x + mat.m4 * vec.y,
+		mat.m2 * vec.x + mat.m5 * vec.y
+	};
+	return result;
+}
+
+// Multiply Matrix22 function
+QM_API q_matrix32 qmMatrix32MultiplyMatrix22(q_matrix32 left, q_matrix22 right)
+{
+	q_float m0 = left.m0 * right.m0 + left.m3 * right.m1;
+	q_float m1 = left.m1 * right.m0 + left.m4 * right.m1;
+	q_float m2 = left.m2 * right.m0 + left.m5 * right.m1;
+	q_float m3 = left.m0 * right.m2 + left.m3 * right.m3;
+	q_float m4 = left.m1 * right.m2 + left.m4 * right.m3;
+	q_float m5 = left.m2 * right.m2 + left.m5 * right.m3;
+
+	q_matrix32 result = {
+		m0, m3,
+		m1, m4,
+		m2, m5
+	};
+	return result;
+}
+
+// Multiply Matrix23 function
+QM_API q_matrix33 qmMatrix32MultiplyMatrix23(q_matrix32 left, q_matrix23 right)
+{
+	q_float m0 = left.m0 * right.m0 + left.m3 * right.m1;
+	q_float m1 = left.m1 * right.m0 + left.m4 * right.m1;
+	q_float m2 = left.m2 * right.m0 + left.m5 * right.m1;
+	q_float m3 = left.m0 * right.m2 + left.m3 * right.m3;
+	q_float m4 = left.m1 * right.m2 + left.m4 * right.m3;
+	q_float m5 = left.m2 * right.m2 + left.m5 * right.m3;
+	q_float m6 = left.m0 * right.m4 + left.m3 * right.m5;
+	q_float m7 = left.m1 * right.m4 + left.m4 * right.m5;
+	q_float m8 = left.m2 * right.m4 + left.m5 * right.m5;
+
+	q_matrix33 result = {
+		m0, m3, m6,
+		m1, m4, m7,
+		m2, m5, m8
+	};
+	return result;
+}
+
+// Multiply Matrix24 function
+QM_API q_matrix34 qmMatrix32MultiplyMatrix24(q_matrix32 left, q_matrix24 right)
+{
+	q_float m0 = left.m0 * right.m0 + left.m3 * right.m1;
+	q_float m1 = left.m1 * right.m0 + left.m4 * right.m1;
+	q_float m2 = left.m2 * right.m0 + left.m5 * right.m1;
+	q_float m3 = left.m0 * right.m2 + left.m3 * right.m3;
+	q_float m4 = left.m1 * right.m2 + left.m4 * right.m3;
+	q_float m5 = left.m2 * right.m2 + left.m5 * right.m3;
+	q_float m6 = left.m0 * right.m4 + left.m3 * right.m5;
+	q_float m7 = left.m1 * right.m4 + left.m4 * right.m5;
+	q_float m8 = left.m2 * right.m4 + left.m5 * right.m5;
+	q_float m9 = left.m0 * right.m6 + left.m3 * right.m7;
+	q_float m10 = left.m1 * right.m6 + left.m4 * right.m7;
+	q_float m11 = left.m2 * right.m6 + left.m5 * right.m7;
+
+	q_matrix34 result = {
+		m0, m3, m6, m9,
+		m1, m4, m7, m10,
+		m2, m5, m8, m11
+	};
+	return result;
+}
+
+// Transpose function
+QM_API q_matrix23 qmMatrix32Transpose(q_matrix32 mat)
+{
+	q_matrix23 result = {
+		mat.m0, mat.m1, mat.m2,
+		mat.m3, mat.m4, mat.m5
+	};
+	return result;
+}
+
+// Equal function
+QM_API q_bool qmMatrix32Equal(q_matrix32 left, q_matrix32 right)
+{
+	return Q_BOOL(
+		equalf(left.m0, right.m0) &&
+		equalf(left.m1, right.m1) &&
+		equalf(left.m2, right.m2) &&
+		equalf(left.m3, right.m3) &&
+		equalf(left.m4, right.m4) &&
+		equalf(left.m5, right.m5)
+	);
 }
 
 #ifdef __cplusplus
