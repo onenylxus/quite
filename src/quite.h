@@ -155,6 +155,14 @@ typedef enum q_bool
 	#define Q_BOOL(b) ((b) ? q_true : q_false)
 #endif /* Q_BOOL */
 
+//// String type ////
+
+typedef const char *q_str;
+
+#if defined(Q_ENABLE_TYPE_ALIAS)
+	typedef q_str qt_s;
+#endif /* defined(Q_ENABLE_TYPE_ALIAS) */
+
 //// Functions ////
 
 // Prevent function name mangling

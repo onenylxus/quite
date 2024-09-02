@@ -22,10 +22,12 @@ project(quite C)
 set(QUITE_HEADER_FILES
 	quite.h
 	qmath.h
+	qutils.h
 )
 
 set(QUITE_SOURCE_FILES
 	quite.c
+	qutils.c
 )
 
 add_library(${PROJECT_NAME} ${QUITE_SOURCE_FILES} ${QUITE_HEADER_FILES})
