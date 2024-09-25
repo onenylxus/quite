@@ -93,12 +93,6 @@
 		q_float z;
 		q_float w;
 	} q_vector4;
-
-	#if defined(Q_ENABLE_TYPE_ALIAS)
-		typedef q_vector2 qt_vec2;
-		typedef q_vector3 qt_vec3;
-		typedef q_vector4 qt_vec4;
-	#endif /* defined(Q_ENABLE_TYPE_ALIAS) */
 #endif /* Q_VECTOR */
 
 #ifndef Q_MATRIX
@@ -166,18 +160,6 @@
 		q_float m2, m6, m10, m14;
 		q_float m3, m7, m11, m15;
 	} q_matrix44;
-
-	#if defined(Q_ENABLE_TYPE_ALIAS)
-		typedef q_matrix22 qt_mat22, qt_mat2;
-		typedef q_matrix23 qt_mat23;
-		typedef q_matrix24 qt_mat24;
-		typedef q_matrix32 qt_mat32;
-		typedef q_matrix33 qt_mat33, qt_mat3;
-		typedef q_matrix34 qt_mat34;
-		typedef q_matrix42 qt_mat42;
-		typedef q_matrix43 qt_mat43;
-		typedef q_matrix44 qt_mat44, qt_mat4;
-	#endif /* defined(Q_ENABLE_TYPE_ALIAS) */
 #endif /* Q_MATRIX */
 
 //// Quaternion type ////
@@ -186,10 +168,6 @@
 	#define Q_QUATERNION
 
 	typedef q_vector4 q_quaternion;
-
-	#if defined(Q_ENABLE_TYPE_ALIAS)
-		typedef q_quaternion qt_quat;
-	#endif /* defined(Q_ENABLE_TYPE_ALIAS) */
 #endif /* Q_QUATERNION */
 
 //// Internal functions ////

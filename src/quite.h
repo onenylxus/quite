@@ -53,10 +53,6 @@ typedef q_voidp q_handle;
 
 #define q_null NULL
 
-#if defined(Q_ENABLE_TYPE_ALIAS)
-	typedef q_void qt_v;
-#endif /* defined(Q_ENABLE_TYPE_ALIAS) */
-
 //// Integer types ////
 
 typedef unsigned char q_uchar, *q_ucharp;
@@ -85,59 +81,11 @@ typedef long long q_long, *q_longp;
 #define q_long_max ((q_long)(q_ulong_max >> 1))
 #define q_long_min ((q_long)~q_long_max)
 
-#if defined(Q_ENABLE_TYPE_ALIAS)
-	typedef q_uchar qt_u8;
-	typedef q_ushort qt_u16;
-	typedef q_uint qt_u32;
-	typedef q_uint qt_u64;
-
-	typedef q_ucharp qt_u8p;
-	typedef q_ushortp qt_u16p;
-	typedef q_uintp qt_u32p;
-	typedef q_uintp qt_u64p;
-
-	typedef q_char qt_i8;
-	typedef q_short qt_i16;
-	typedef q_int qt_i32;
-	typedef q_int qt_i64;
-
-	typedef q_charp qt_i8p;
-	typedef q_shortp qt_i16p;
-	typedef q_intp qt_i32p;
-	typedef q_intp qt_i64p;
-
-	#define qt_u8_max q_uchar_max
-	#define qt_i8_max q_char_max
-	#define qt_i8_min q_char_min
-
-	#define qt_u16_max q_ushort_max
-	#define qt_i16_max q_short_max
-	#define qt_i16_min q_short_min
-
-	#define qt_u32_max q_uint_max
-	#define qt_i32_max q_int_max
-	#define qt_i32_min q_int_min
-
-	#define qt_u64_max q_ulong_max
-	#define qt_i64_max q_long_max
-	#define qt_i64_min q_long_min
-#endif /* defined(Q_ENABLE_TYPE_ALIAS) */
-
 //// Floating point types ////
 
 typedef float q_float, *q_floatp;
 typedef double q_double, *q_doublep;
 typedef long double q_ldouble, *q_ldoublep;
-
-#if defined(Q_ENABLE_TYPE_ALIAS)
-	typedef q_float qt_f;
-	typedef q_double qt_d;
-	typedef q_ldouble qt_ld;
-
-	typedef q_floatp qt_fp;
-	typedef q_doublep qt_dp;
-	typedef q_ldoublep qt_ldp;
-#endif /* defined(Q_ENABLE_TYPE_ALIAS) */
 
 //// Boolean type ////
 
@@ -147,10 +95,6 @@ typedef enum q_bool
 	q_true
 } q_bool;
 
-#if defined(Q_ENABLE_TYPE_ALIAS)
-	typedef q_bool qt_b;
-#endif /* defined(Q_ENABLE_TYPE_ALIAS) */
-
 #ifndef Q_BOOL
 	#define Q_BOOL(b) ((b) ? q_true : q_false)
 #endif /* Q_BOOL */
@@ -158,10 +102,6 @@ typedef enum q_bool
 //// String type ////
 
 typedef const char *q_str;
-
-#if defined(Q_ENABLE_TYPE_ALIAS)
-	typedef q_str qt_s;
-#endif /* defined(Q_ENABLE_TYPE_ALIAS) */
 
 //// Functions ////
 
