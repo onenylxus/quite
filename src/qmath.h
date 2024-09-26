@@ -891,8 +891,8 @@ QM_API q_vector3 qmVector3Barycenter(q_vector3 plane, q_vector3 v1, q_vector3 v2
 		plane.z - v1.z
 	};
 
-	q_float fs1 = sqf(s1.x) + sqf(s1.y) + sqf(s1.z);	   // qmVector3DistanceSq(s1)
-	q_float fs2 = sqf(s2.x) + sqf(s2.y) + sqf(s2.z);	   // qmVector3DistanceSq(s2)
+	q_float fs1 = sqf(s1.x) + sqf(s1.y) + sqf(s1.z);       // qmVector3DistanceSq(s1)
+	q_float fs2 = sqf(s2.x) + sqf(s2.y) + sqf(s2.z);       // qmVector3DistanceSq(s2)
 	q_float dot = s1.x * s2.x + s1.y * s2.y + s1.z * s2.z; // qmVector3DotProduct(s1, s2)
 	q_float dp1 = s1.x * s3.x + s1.y * s3.y + s1.z * s3.z; // qmVector3DotProduct(s1, s3)
 	q_float dp2 = s2.x * s3.x + s2.y * s3.y + s2.z * s3.z; // qmVector3DotProduct(s2, s3)
@@ -942,7 +942,7 @@ QM_API q_vector3 qmVector3Refract(q_vector3 vec, q_vector3 normal, q_float index
 QM_API q_vector3 qmVector3Project(q_vector3 vec, q_vector3 target)
 {
 	q_float dot = vec.x * target.x + vec.y * target.y + vec.z * target.z; // qmVector3DotProduct(vec, target)
-	q_float len = sqf(target.x) + sqf(target.y) + sqf(target.z);		  // qmVector3LengthSq(target)
+	q_float len = sqf(target.x) + sqf(target.y) + sqf(target.z);          // qmVector3LengthSq(target)
 	q_float mag = dot / len;
 
 	q_vector3 result = { // qmVector3Scale(target, mag)
@@ -957,7 +957,7 @@ QM_API q_vector3 qmVector3Project(q_vector3 vec, q_vector3 target)
 QM_API q_vector3 qmVector3Reject(q_vector3 vec, q_vector3 target)
 {
 	q_float dot = vec.x * target.x + vec.y * target.y + vec.z * target.z; // qmVector3DotProduct(vec, target)
-	q_float len = sqf(target.x) + sqf(target.y) + sqf(target.z);		  // qmVector3LengthSq(target)
+	q_float len = sqf(target.x) + sqf(target.y) + sqf(target.z);          // qmVector3LengthSq(target)
 	q_float mag = dot / len;
 
 	q_vector3 result = { // qmVector3Subtract(vec, qmVector3Scale(target, mag))
@@ -1068,7 +1068,7 @@ QM_API q_float qmVector3Angle(q_vector3 left, q_vector3 right)
 		left.x * right.y - left.y * right.x
 	};
 
-	q_float len = sqrtf(sqf(cross.x) + sqf(cross.y) + sqf(cross.z));	  // qmVector3Length(cross)
+	q_float len = sqrtf(sqf(cross.x) + sqf(cross.y) + sqf(cross.z));      // qmVector3Length(cross)
 	q_float dot = left.x * right.x + left.y * right.y + left.z * right.z; // qmVector3DotProduct(left, right)
 	return atan2f(len, dot);
 }
@@ -1216,7 +1216,7 @@ QM_API q_vector4 qmVector4Normalize(q_vector4 vec)
 		return vec;
 	}
 
-	q_vector4 result = { // qmVector3DivideScale(vec, length)
+	q_vector4 result = { // qmVector4DivideScale(vec, length)
 		vec.x / length,
 		vec.y / length,
 		vec.z / length,
@@ -3186,6 +3186,234 @@ QM_API q_bool qmMatrix44Equal(q_matrix44 left, q_matrix44 right)
 		equalf(left.m13, right.m13) &&
 		equalf(left.m14, right.m14) &&
 		equalf(left.m15, right.m15)
+	);
+}
+
+//// Quaternion functions ////
+
+// Identity function
+QM_API q_quaternion qmQuaternionIdentity(q_void)
+{
+	q_quaternion result = {0.0f, 0.0f, 0.0f, 1.0f};
+	return result;
+}
+
+// Add function
+QM_API q_quaternion qmQuaternionAdd(q_quaternion left, q_quaternion right)
+{
+	q_quaternion result = {
+		left.x + right.x,
+		left.y + right.y,
+		left.z + right.z,
+		left.w + right.w
+	};
+	return result;
+}
+
+// Scalar add function
+QM_API q_quaternion qmQuaternionAddScalar(q_quaternion quat, q_float scl)
+{
+	q_quaternion result = {
+		quat.x + scl,
+		quat.y + scl,
+		quat.z + scl,
+		quat.w + scl
+	};
+	return result;
+}
+
+// Subtract function
+QM_API q_quaternion qmQuaternionSubtract(q_quaternion left, q_quaternion right)
+{
+	q_quaternion result = {
+		left.x - right.x,
+		left.y - right.y,
+		left.z - right.z,
+		left.w - right.w
+	};
+	return result;
+}
+
+// Scalar subtract function
+QM_API q_quaternion qmQuaternionSubtractScalar(q_quaternion quat, q_float scl)
+{
+	q_quaternion result = {
+		quat.x - scl,
+		quat.y - scl,
+		quat.z - scl,
+		quat.w - scl
+	};
+	return result;
+}
+
+// Multiply function
+QM_API q_quaternion qmQuaternionMultiply(q_quaternion left, q_quaternion right)
+{
+	q_quaternion result = {
+		left.x * right.w + left.w * right.x + left.y * right.z - left.z * right.y,
+		left.y * right.w + left.w * right.y + left.z * right.x - left.x * right.z,
+		left.z * right.w + left.w * right.z + left.x * right.y - left.y * right.x,
+		left.w * right.w - left.x * right.x - left.y * right.y - left.z * right.z
+	};
+	return result;
+}
+
+// Scale function
+QM_API q_quaternion qmQuaternionScale(q_quaternion quat, q_float scl)
+{
+	q_quaternion result = {
+		quat.x * scl,
+		quat.y * scl,
+		quat.z * scl,
+		quat.w * scl
+	};
+	return result;
+}
+
+// Divide function
+QM_API q_quaternion qmQuaternionDivide(q_quaternion left, q_quaternion right)
+{
+	q_quaternion result = {
+		left.x / right.x,
+		left.y / right.y,
+		left.z / right.z,
+		left.w / right.w
+	};
+	return result;
+}
+
+// Normalize function
+QM_API q_quaternion qmQuaternionNormalize(q_quaternion quat)
+{
+	q_float length = sqrt(sqf(quat.x) + sqf(quat.y) + sqf(quat.z) + sqf(quat.w)); // qmQuaternionLength(quat)
+	if (length == 0.0f)
+	{
+		return quat;
+	}
+
+	q_quaternion result = { // qmQuaternionScale(quat, 1 / length)
+		quat.x / length,
+		quat.y / length,
+		quat.z / length,
+		quat.w / length
+	};
+	return result;
+}
+
+// Invert function
+QM_API q_quaternion qmQuaternionInvert(q_quaternion quat)
+{
+	q_float length = sqrt(sqf(quat.x) + sqf(quat.y) + sqf(quat.z) + sqf(quat.w)); // qmQuaternionLength(quat)
+	if (length == 0.0f)
+	{
+		return quat;
+	}
+
+	q_quaternion result = { // qmQuaternionScale(quat, -1 / length)
+		-quat.x / length,
+		-quat.y / length,
+		-quat.z / length,
+		-quat.w / length
+	};
+	return result;
+}
+
+// Linear interpolation function
+QM_API q_quaternion qmQuaternionLerp(q_float value, q_quaternion start, q_quaternion end)
+{
+	q_quaternion result = {
+		start.x + value * (end.x - start.x), // qmFloatLerp(value, start.x, end.x)
+		start.y + value * (end.y - start.y), // qmFloatLerp(value, start.y, end.y)
+		start.z + value * (end.z - start.z), // qmFloatLerp(value, start.z, end.z)
+		start.w + value * (end.w - start.w)  // qmFloatLerp(value, start.w, end.w)
+	};
+	return result;
+}
+
+// Normalized linear interpolation function
+QM_API q_quaternion qmQuaternionNlerp(q_float value, q_quaternion start, q_quaternion end)
+{
+	q_quaternion lerp = { // qmQuaternionLerp(value, start, end)
+		start.x + value * (end.x - start.x),
+		start.y + value * (end.y - start.y),
+		start.z + value * (end.z - start.z),
+		start.w + value * (end.w - start.w)
+	};
+
+	q_float length = sqrt(sqf(lerp.x) + sqf(lerp.y) + sqf(lerp.z) + sqf(lerp.w)); // qmQuaternionLength(lerp)
+	if (length == 0.0f)
+	{
+		return lerp;
+	}
+
+	q_quaternion result = { // qmQuaternionScale(lerp, 1 / length)
+		lerp.x / length,
+		lerp.y / length,
+		lerp.z / length,
+		lerp.w / length
+	};
+	return result;
+}
+
+// Spherical linear interpolation function
+QM_API q_quaternion qmQuaternionSlerp(q_float value, q_quaternion start, q_quaternion end)
+{
+	float cosHalf = start.x * end.x + start.y * end.y + start.z * end.z + start.w * end.w;
+	if (cosHalf < 0.0f)
+	{
+		// qmQuaternionScale(end, -1)
+		end.x *= -1.0f;
+		end.y *= -1.0f;
+		end.z *= -1.0f;
+		end.w *= -1.0f;
+
+		cosHalf *= -1.0f;
+	}
+	if (fabsf(cosHalf) >= 1.0f)
+	{
+		return start;
+	}
+
+	float half = acosf(cosHalf);
+	float sinHalf = sqrtf(1.0f - sqf(cosHalf));
+	if (fabsf(sinHalf) < Q_EPSILON)
+	{
+		q_quaternion result = { // qmQuaternionLerp(0.5, start, end)
+			(start.x + end.x) * 0.5f,
+			(start.y + end.y) * 0.5f,
+			(start.z + end.z) * 0.5f,
+			(start.w + end.w) * 0.5f
+		};
+		return result;
+	}
+	else
+	{
+		float ra = sinf((1.0f - value) * half) / sinHalf;
+		float rb = sinf(value * half) / sinHalf;
+		q_quaternion result = {
+			start.x * ra + end.x * rb,
+			start.y * ra + end.y * rb,
+			start.z * ra + end.z * rb,
+			start.w * ra + end.w * rb
+		};
+		return result;
+	}
+}
+
+// Length function
+QM_API q_float qmQuaternionLength(q_quaternion quat)
+{
+	return sqrtf(sqf(quat.x) + sqf(quat.y) + sqf(quat.z) + sqf(quat.w));
+}
+
+// Equal function
+QM_API q_bool qmQuaternionEqual(q_quaternion left, q_quaternion right)
+{
+	return Q_BOOL(
+		equalf(left.x, right.x) &&
+		equalf(left.y, right.y) &&
+		equalf(left.z, right.z) &&
+		equalf(left.w, right.w)
 	);
 }
 
